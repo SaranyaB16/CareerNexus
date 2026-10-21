@@ -2,10 +2,15 @@ import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 from backend.database import init_db
 from backend.seed_data import seed_database
-from backend.routers import students, drives, diagnostics, github_validator
+from backend.routers import (
+    students, drives, diagnostics, github_validator,
+    alerts, mock_interview, recruiter, alumni,
+    analytics, applications
+)
 
 app = FastAPI(
     title="CareerNexus",
@@ -22,13 +27,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Register API Routers
+# Register All API Routers
 app.include_router(students.router)
 app.include_router(drives.router)
 app.include_router(diagnostics.router)
 app.include_router(github_validator.router)
+app.include_router(alerts.router)
+app.include_router(mock_interview.router)
+app.include_router(recruiter.router)
+app.include_router(alumni.router)
+app.include_router(analytics.router)
+app.include_router(applications.router)
 
-# Mount frontend static files if directory exists
+# Mount frontend static files
 frontend_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "frontend")
 if os.path.exists(frontend_dir):
     app.mount("/static", StaticFiles(directory=frontend_dir), name="static")
@@ -38,6 +49,18 @@ if os.path.exists(frontend_dir):
 def startup_event():
     init_db()
     seed_database()
+
+
+@app.get("/")
+def serve_index():
+    index_file = os.path.join(frontend_dir, "index.html")
+    if os.path.exists(index_file):
+        return FileResponse(index_file)
+    return {
+        "app": "CareerNexus",
+        "docs": "/docs",
+        "message": "CareerNexus API is running smoothly!"
+    }
 
 
 @app.get("/api/health")
@@ -50,6 +73,10 @@ def health_check():
             "Eligibility & Free Resource Curator",
             "State Improvement Level-Up Planner",
             "GitHub & Project Authenticity Inspector",
-            "Company Drive Forensics (Battle Cards)"
+            "Placement Opportunity Alerts",
+            "AI Mock Interview Coach",
+            "Recruiter Reverse Pitch Sourcing",
+            "Alumni Warm Referral Bridge",
+            "TPO At-Risk Radar & Analytics"
         ]
     }
