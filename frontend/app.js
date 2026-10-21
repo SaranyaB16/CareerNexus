@@ -1,11 +1,22 @@
 let currentRole = "student";
 let activeSessionId = null;
+let currentUser = null;
 
 // Initialize when page loads
 document.addEventListener("DOMContentLoaded", async () => {
   if (window.lucide) lucide.createIcons();
+  
+  // Check for saved session
+  const savedUser = localStorage.getItem("careernexus_user");
+  if (savedUser) {
+    try {
+      currentUser = JSON.parse(savedUser);
+      updateAuthUI(currentUser);
+    } catch(e) {}
+  }
+
   await loadInitialData();
-  await loadAlerts(1);
+  await loadAlerts(currentUser?.student_id || 1);
   await loadAlumni();
 });
 
@@ -495,3 +506,175 @@ async function loadTPOAnalytics() {
     console.error("TPO load error:", err);
   }
 }
+
+// ==================== AUTHENTICATION LOGIC ====================
+let authMode = "login";    // "login" or "signup"
+let authRole = "student";  // "student" or "recruiter"
+
+function openAuthModal() {
+  document.getElementById("auth-modal").classList.remove("hidden");
+  document.getElementById("auth-error-msg").classList.add("hidden");
+  if (window.lucide) lucide.createIcons();
+}
+
+function closeAuthModal() {
+  document.getElementById("auth-modal").classList.add("hidden");
+}
+
+function setAuthMode(mode) {
+  authMode = mode;
+  const isLogin = mode === "login";
+
+  document.getElementById("auth-modal-title").innerText = isLogin ? "Sign In to CareerNexus" : "Create CareerNexus Account";
+  document.getElementById("auth-modal-subtitle").innerText = isLogin ? "Access personalized placement analytics & tools" : "Join the campus placement network";
+
+  // Tab button styling
+  const loginBtn = document.getElementById("auth-tab-login");
+  const signupBtn = document.getElementById("auth-tab-signup");
+  if (isLogin) {
+    loginBtn.className = "flex-1 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white transition-all shadow";
+    signupBtn.className = "flex-1 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all";
+  } else {
+    signupBtn.className = "flex-1 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white transition-all shadow";
+    loginBtn.className = "flex-1 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all";
+  }
+
+  // Toggle signup-only fields
+  document.getElementById("field-name").classList.toggle("hidden", isLogin);
+  document.getElementById("auth-submit-btn").querySelector("span").innerText = isLogin ? "Sign In" : "Create Account";
+
+  updateRoleExtraFields();
+}
+
+function setAuthRole(role) {
+  authRole = role;
+  const isStudent = role === "student";
+
+  const studentBtn = document.getElementById("role-select-student");
+  const recruiterBtn = document.getElementById("role-select-recruiter");
+
+  if (isStudent) {
+    studentBtn.className = "py-2 px-3 rounded-xl border border-indigo-500/40 bg-indigo-500/10 text-indigo-300 text-xs font-semibold flex items-center justify-center space-x-1.5 transition-all";
+    recruiterBtn.className = "py-2 px-3 rounded-xl border border-slate-700 bg-slate-800 text-slate-400 text-xs font-semibold flex items-center justify-center space-x-1.5 transition-all";
+  } else {
+    recruiterBtn.className = "py-2 px-3 rounded-xl border border-cyan-500/40 bg-cyan-500/10 text-cyan-300 text-xs font-semibold flex items-center justify-center space-x-1.5 transition-all";
+    studentBtn.className = "py-2 px-3 rounded-xl border border-slate-700 bg-slate-800 text-slate-400 text-xs font-semibold flex items-center justify-center space-x-1.5 transition-all";
+  }
+
+  updateRoleExtraFields();
+  if (window.lucide) lucide.createIcons();
+}
+
+function updateRoleExtraFields() {
+  const isSignup = authMode === "signup";
+  document.getElementById("field-student-extras").classList.toggle("hidden", !isSignup || authRole !== "student");
+  document.getElementById("field-recruiter-extras").classList.toggle("hidden", !isSignup || authRole !== "recruiter");
+}
+
+async function handleAuthSubmit(e) {
+  e.preventDefault();
+  const errorBox = document.getElementById("auth-error-msg");
+  errorBox.classList.add("hidden");
+
+  const email = document.getElementById("auth-email").value.trim();
+  const password = document.getElementById("auth-password").value;
+
+  const endpoint = authMode === "login" ? "/api/auth/login" : "/api/auth/signup";
+
+  const payload = {
+    email: email,
+    password: password,
+    role: authRole
+  };
+
+  if (authMode === "signup") {
+    payload.name = document.getElementById("auth-name").value.trim();
+    if (authRole === "student") {
+      payload.department = document.getElementById("auth-dept").value;
+      payload.cgpa = parseFloat(document.getElementById("auth-cgpa").value) || 7.5;
+    } else {
+      payload.company = document.getElementById("auth-company").value.trim() || "Visiting Tech Partner";
+    }
+  }
+
+  try {
+    const res = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      errorBox.innerText = data.detail || "Authentication failed. Please check your credentials.";
+      errorBox.classList.remove("hidden");
+      return;
+    }
+
+    // Success
+    currentUser = data.user;
+    localStorage.setItem("careernexus_user", JSON.stringify(currentUser));
+    updateAuthUI(currentUser);
+    closeAuthModal();
+
+    // Auto-switch to appropriate role view
+    switchRole(currentUser.role === "recruiter" ? "recruiter" : "student");
+    alert(`🎉 ${data.message}`);
+
+  } catch (err) {
+    errorBox.innerText = "Connection error. Is the CareerNexus server running?";
+    errorBox.classList.remove("hidden");
+  }
+}
+
+function updateAuthUI(user) {
+  const area = document.getElementById("auth-nav-area");
+  if (!user) {
+    area.innerHTML = `
+      <button onclick="openAuthModal()" class="px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium bg-slate-800 hover:bg-slate-700 text-indigo-300 border border-indigo-500/30 transition-all flex items-center space-x-1.5 shadow-sm">
+        <i data-lucide="log-in" class="w-4 h-4"></i>
+        <span>Sign In / Sign Up</span>
+      </button>
+    `;
+  } else {
+    const badgeColor = user.role === "recruiter" ? "bg-cyan-500/20 text-cyan-300 border-cyan-500/30" : "bg-indigo-500/20 text-indigo-300 border-indigo-500/30";
+    area.innerHTML = `
+      <div class="flex items-center space-x-2 bg-slate-800/80 py-1 px-2.5 rounded-xl border border-slate-700/80">
+        <div class="w-6 h-6 rounded-lg bg-indigo-600 flex items-center justify-center text-xs font-bold text-white">
+          ${user.name.charAt(0)}
+        </div>
+        <div class="text-left hidden sm:block">
+          <div class="text-xs font-semibold text-white leading-tight">${user.name}</div>
+          <div class="text-[10px] text-slate-400 capitalize">${user.role === 'recruiter' ? (user.company || 'Recruiter') : 'Student'}</div>
+        </div>
+        <button onclick="logout()" title="Logout" class="ml-1 text-slate-400 hover:text-rose-400 p-1 rounded transition-colors">
+          <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+        </button>
+      </div>
+    `;
+  }
+  if (window.lucide) lucide.createIcons();
+}
+
+function quickDemoLogin(role) {
+  if (role === "student") {
+    document.getElementById("auth-email").value = "aarav.sharma@college.edu";
+    document.getElementById("auth-password").value = "password123";
+    setAuthRole("student");
+  } else {
+    document.getElementById("auth-email").value = "recruiter@amazon.com";
+    document.getElementById("auth-password").value = "password123";
+    setAuthRole("recruiter");
+  }
+  setAuthMode("login");
+  document.getElementById("auth-form").dispatchEvent(new Event("submit"));
+}
+
+function logout() {
+  currentUser = null;
+  localStorage.removeItem("careernexus_user");
+  updateAuthUI(null);
+  switchRole("student");
+  alert("You have logged out of CareerNexus.");
+}
+

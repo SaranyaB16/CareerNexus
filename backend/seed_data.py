@@ -1,7 +1,7 @@
-import json
+import hashlib
 from backend.database import SessionLocal, init_db
 from backend.models import (
-    Student, CompanyDrive, DriveForensics,
+    User, Student, CompanyDrive, DriveForensics,
     LearningResource, Alumni, RemediationCohort
 )
 
@@ -104,6 +104,41 @@ def seed_database():
         )
     ]
     db.add_all(students)
+    db.commit()
+
+    # Seed Demo Users for Login
+    demo_password_hash = hashlib.sha256("password123".encode("utf-8")).hexdigest()
+    users = [
+        User(
+            name="Aarav Sharma",
+            email="aarav.sharma@college.edu",
+            password_hash=demo_password_hash,
+            role="student",
+            student_id=students[0].id
+        ),
+        User(
+            name="Priya Patel",
+            email="priya.patel@college.edu",
+            password_hash=demo_password_hash,
+            role="student",
+            student_id=students[1].id
+        ),
+        User(
+            name="Sarah Jenkins",
+            email="recruiter@amazon.com",
+            password_hash=demo_password_hash,
+            role="recruiter",
+            company="Amazon"
+        ),
+        User(
+            name="Prof. R. Sharma",
+            email="tpo@college.edu",
+            password_hash=demo_password_hash,
+            role="tpo",
+            company="Campus Placement Cell"
+        )
+    ]
+    db.add_all(users)
 
     # 2. Seed Company Drives
     drives = [

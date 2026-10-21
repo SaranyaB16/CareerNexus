@@ -9,7 +9,7 @@ from backend.seed_data import seed_database
 from backend.routers import (
     students, drives, diagnostics, github_validator,
     alerts, mock_interview, recruiter, alumni,
-    analytics, applications
+    analytics, applications, auth
 )
 
 app = FastAPI(
@@ -38,6 +38,7 @@ app.include_router(recruiter.router)
 app.include_router(alumni.router)
 app.include_router(analytics.router)
 app.include_router(applications.router)
+app.include_router(auth.router)
 
 # Mount frontend static files
 frontend_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "frontend")

@@ -85,3 +85,39 @@ def test_recruiter_reverse_pitch_search():
     assert "candidates" in data
     assert all(c["cgpa"] >= 7.5 for c in data["candidates"])
     assert all(c["verified_project_badge"] is True for c in data["candidates"])
+
+
+def test_auth_signup_and_login():
+    import uuid
+    test_email = f"test_{uuid.uuid4().hex[:6]}@college.edu"
+
+    # 1. Sign up new student
+    signup_res = client.post("/api/auth/signup", json={
+        "name": "Neha Gupta",
+        "email": test_email,
+        "password": "secretPassword!",
+        "role": "student",
+        "department": "Computer Science",
+        "cgpa": 8.7
+    })
+    assert signup_res.status_code == 200
+    signup_data = signup_res.json()
+    assert signup_data["status"] == "success"
+    assert signup_data["user"]["name"] == "Neha Gupta"
+
+    # 2. Login with created credentials
+    login_res = client.post("/api/auth/login", json={
+        "email": test_email,
+        "password": "secretPassword!"
+    })
+    assert login_res.status_code == 200
+    login_data = login_res.json()
+    assert login_data["status"] == "success"
+    assert login_data["user"]["email"] == test_email
+
+    # 3. Test wrong password
+    bad_login = client.post("/api/auth/login", json={
+        "email": test_email,
+        "password": "wrongPassword"
+    })
+    assert bad_login.status_code == 401

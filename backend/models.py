@@ -4,6 +4,19 @@ from sqlalchemy.orm import relationship
 from backend.database import Base
 
 
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(100), nullable=False)
+    email = Column(String(120), unique=True, index=True, nullable=False)
+    password_hash = Column(String(128), nullable=False)
+    role = Column(String(30), default="student")  # student, recruiter, tpo
+    company = Column(String(100), default="")  # for recruiters
+    student_id = Column(Integer, ForeignKey("students.id"), nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
 class Student(Base):
     __tablename__ = "students"
 
