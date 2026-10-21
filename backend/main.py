@@ -8,8 +8,8 @@ from backend.seed_data import seed_database
 from backend.routers import students, drives, diagnostics, github_validator
 
 app = FastAPI(
-    title="CampusPulse AI",
-    description="Intelligent Campus Placement & Career Management Ecosystem",
+    title="CareerNexus",
+    description="Intelligent Campus Placement & Career Management Platform",
     version="1.0.0"
 )
 
@@ -44,7 +44,7 @@ def startup_event():
 def health_check():
     return {
         "status": "healthy",
-        "app": "CampusPulse AI",
+        "app": "CareerNexus",
         "version": "1.0.0",
         "features_active": [
             "Eligibility & Free Resource Curator",

@@ -2,7 +2,7 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-DB_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "campuspulse.db")
+DB_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "careernexus.db")
 DATABASE_URL = f"sqlite:///{DB_PATH}"
 
 engine = create_engine(
