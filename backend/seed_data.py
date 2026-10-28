@@ -1,4 +1,5 @@
 import hashlib
+import json
 from backend.database import SessionLocal, init_db
 from backend.models import (
     User, Student, CompanyDrive, DriveForensics,
