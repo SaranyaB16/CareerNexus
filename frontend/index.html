@@ -36,8 +36,8 @@
 
       <!-- Center Step Breadcrumb Indicator (Desktop Page 2) -->
       <div id="step-breadcrumb" class="hidden md:flex items-center space-x-2 text-xs font-semibold px-3 py-1.5 rounded-xl bg-slate-900/80 border border-slate-800 text-slate-300">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        <span id="breadcrumb-step-label">Step 1: Placement Alerts</span>
+        <span id="breadcrumb-dot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span id="breadcrumb-step-label">Student Step 1: Placement Alerts</span>
       </div>
 
       <!-- Right Header Area -->
@@ -51,7 +51,7 @@
         <!-- Page 2 Navigation & Profile (Hidden on Page 1) -->
         <div id="page-2-nav" class="hidden flex items-center space-x-3">
           <!-- Persona Switcher -->
-          <div class="hidden sm:flex items-center bg-slate-900/90 p-1 rounded-xl border border-slate-800 shadow-inner">
+          <div class="flex items-center bg-slate-900/90 p-1 rounded-xl border border-slate-800 shadow-inner">
             <button id="tab-student" onclick="switchRole('student')" class="role-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center space-x-1.5 bg-emerald-500 text-slate-950 shadow-md">
               <i data-lucide="graduation-cap" class="w-3.5 h-3.5"></i>
               <span>Student</span>
@@ -69,13 +69,13 @@
           <!-- User Chip & Logout Button -->
           <div id="user-profile-chip" class="flex items-center space-x-2.5 bg-slate-900/90 py-1 px-3 rounded-xl border border-slate-800">
             <div id="user-avatar" class="w-6 h-6 rounded-lg bg-emerald-500 text-slate-950 font-bold text-xs flex items-center justify-center">A</div>
-            <div class="text-left hidden md:block">
+            <div class="text-left hidden lg:block">
               <div id="user-name" class="text-xs font-semibold text-white leading-tight">Aarav Sharma</div>
               <div id="user-role-badge" class="text-[10px] text-emerald-400 font-medium capitalize">Student</div>
             </div>
             <button onclick="logout()" title="Logout to Page 1" class="ml-1 text-slate-400 hover:text-rose-400 p-1 rounded-lg transition-colors flex items-center gap-1 text-xs">
               <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
-              <span class="hidden lg:inline">Sign Out</span>
+              <span class="hidden xl:inline">Sign Out</span>
             </button>
           </div>
         </div>
@@ -98,7 +98,7 @@
           Sign In to <span class="bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">CareerNexus</span>
         </h1>
         <p class="text-sm text-slate-400 max-w-md mx-auto">
-          Choose your account role below to enter your step-by-step placement dashboard.
+          Choose your account role below to open your personalized dashboard environment.
         </p>
       </div>
 
@@ -227,30 +227,33 @@
     </div>
   </section>
 
-  <!-- ==================== PAGE 2: STEP-BY-STEP DASHBOARD WITH LEFT SIDEBAR ==================== -->
+  <!-- ==================== PAGE 2: DASHBOARD WITH DYNAMIC PERSONA SIDEBAR ==================== -->
   <main id="page-2-dashboard" class="hidden flex-1 flex w-full relative overflow-hidden animate-fade-in">
     
     <!-- Mobile Backdrop -->
     <div id="sidebar-backdrop" onclick="toggleSidebar(false)" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-30 lg:hidden"></div>
 
-    <!-- LEFT SIDEBAR PANEL -->
+    <!-- ==================== LEFT SIDEBAR PANEL (DYNAMIC) ==================== -->
     <aside id="dashboard-sidebar" class="sidebar-panel fixed lg:static inset-y-0 left-0 z-40 w-72 flex-shrink-0 flex flex-col justify-between transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out border-r border-slate-800/80 bg-slate-950/95 top-16 h-[calc(100vh-4rem)]">
       
-      <!-- Top: Navigation Steps -->
+      <!-- Top Section: Header & Persona-Specific Nav List -->
       <div class="p-4 space-y-4 overflow-y-auto">
-        <!-- Sidebar Header -->
+        
+        <!-- Dynamic Sidebar Header -->
         <div class="flex items-center justify-between pb-3 border-b border-slate-800/80">
           <div class="flex items-center space-x-2">
-            <i data-lucide="layout-grid" class="w-4 h-4 text-emerald-400"></i>
-            <span class="text-xs font-bold uppercase tracking-wider text-slate-300">Feature Navigation</span>
+            <div id="sidebar-header-icon-box" class="w-6 h-6 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+              <i id="sidebar-header-icon" data-lucide="graduation-cap" class="w-3.5 h-3.5"></i>
+            </div>
+            <span id="sidebar-header-title" class="text-xs font-bold uppercase tracking-wider text-slate-200">Student Portal</span>
           </div>
-          <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">7 Steps</span>
+          <span id="sidebar-header-badge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">5 Steps</span>
         </div>
 
-        <!-- Step List -->
-        <nav class="space-y-1.5" id="sidebar-step-nav">
-          <!-- Step 1: Placement Alerts -->
-          <button onclick="navigateToStep(1)" id="sidebar-item-1" class="sidebar-item active w-full text-left p-3 rounded-2xl border border-transparent flex items-start space-x-3 group">
+        <!-- 1. STUDENT NAVIGATION PANEL (Active when Student is selected) -->
+        <nav id="sidebar-nav-student" class="space-y-1.5">
+          <!-- Student Step 1: Placement Alerts -->
+          <button onclick="navigateToPersonaStep('student', 1)" id="side-student-item-1" class="sidebar-item active w-full text-left p-3 rounded-2xl border border-transparent flex items-start space-x-3 group">
             <div class="step-num w-7 h-7 rounded-xl bg-emerald-500 text-slate-950 text-xs font-extrabold flex items-center justify-center flex-shrink-0 mt-0.5 shadow-sm">1</div>
             <div class="flex-1 min-w-0">
               <div class="text-xs font-bold text-white flex items-center justify-between">
@@ -261,8 +264,8 @@
             </div>
           </button>
 
-          <!-- Step 2: Gap Diagnostic & Roadmap -->
-          <button onclick="navigateToStep(2)" id="sidebar-item-2" class="sidebar-item w-full text-left p-3 rounded-2xl border border-transparent flex items-start space-x-3 group">
+          <!-- Student Step 2: Gap Diagnostic & Roadmap -->
+          <button onclick="navigateToPersonaStep('student', 2)" id="side-student-item-2" class="sidebar-item w-full text-left p-3 rounded-2xl border border-transparent flex items-start space-x-3 group">
             <div class="step-num w-7 h-7 rounded-xl bg-slate-800 text-slate-400 text-xs font-extrabold flex items-center justify-center flex-shrink-0 mt-0.5">2</div>
             <div class="flex-1 min-w-0">
               <div class="text-xs font-bold text-slate-300 group-hover:text-white">Gap Diagnostic</div>
@@ -270,8 +273,8 @@
             </div>
           </button>
 
-          <!-- Step 3: GitHub & Project Authenticity -->
-          <button onclick="navigateToStep(3)" id="sidebar-item-3" class="sidebar-item w-full text-left p-3 rounded-2xl border border-transparent flex items-start space-x-3 group">
+          <!-- Student Step 3: GitHub & Project Authenticity -->
+          <button onclick="navigateToPersonaStep('student', 3)" id="side-student-item-3" class="sidebar-item w-full text-left p-3 rounded-2xl border border-transparent flex items-start space-x-3 group">
             <div class="step-num w-7 h-7 rounded-xl bg-slate-800 text-slate-400 text-xs font-extrabold flex items-center justify-center flex-shrink-0 mt-0.5">3</div>
             <div class="flex-1 min-w-0">
               <div class="text-xs font-bold text-slate-300 group-hover:text-white">GitHub Authenticity</div>
@@ -279,51 +282,103 @@
             </div>
           </button>
 
-          <!-- Step 4: AI Mock Interview Coach -->
-          <button onclick="navigateToStep(4)" id="sidebar-item-4" class="sidebar-item w-full text-left p-3 rounded-2xl border border-transparent flex items-start space-x-3 group">
+          <!-- Student Step 4: AI Mock Interview Coach -->
+          <button onclick="navigateToPersonaStep('student', 4)" id="side-student-item-4" class="sidebar-item w-full text-left p-3 rounded-2xl border border-transparent flex items-start space-x-3 group">
             <div class="step-num w-7 h-7 rounded-xl bg-slate-800 text-slate-400 text-xs font-extrabold flex items-center justify-center flex-shrink-0 mt-0.5">4</div>
             <div class="flex-1 min-w-0">
-              <div class="text-xs font-bold text-slate-300 group-hover:text-white">AI Mock Interview</div>
+              <div class="text-xs font-bold text-slate-300 group-hover:text-white">Mock Interview Coach</div>
               <p class="text-[11px] text-slate-400 truncate mt-0.5">STAR behavioral & tech AI</p>
             </div>
           </button>
 
-          <!-- Step 5: Alumni Referral Bridge -->
-          <button onclick="navigateToStep(5)" id="sidebar-item-5" class="sidebar-item w-full text-left p-3 rounded-2xl border border-transparent flex items-start space-x-3 group">
+          <!-- Student Step 5: Alumni Referral Bridge -->
+          <button onclick="navigateToPersonaStep('student', 5)" id="side-student-item-5" class="sidebar-item w-full text-left p-3 rounded-2xl border border-transparent flex items-start space-x-3 group">
             <div class="step-num w-7 h-7 rounded-xl bg-slate-800 text-slate-400 text-xs font-extrabold flex items-center justify-center flex-shrink-0 mt-0.5">5</div>
             <div class="flex-1 min-w-0">
               <div class="text-xs font-bold text-slate-300 group-hover:text-white">Alumni Referral Bridge</div>
               <p class="text-[11px] text-slate-400 truncate mt-0.5">15-min chat & warm referral</p>
             </div>
           </button>
+        </nav>
 
-          <!-- Step 6: Recruiter Talent Sourcing -->
-          <button onclick="navigateToStep(6)" id="sidebar-item-6" class="sidebar-item w-full text-left p-3 rounded-2xl border border-transparent flex items-start space-x-3 group">
-            <div class="step-num w-7 h-7 rounded-xl bg-slate-800 text-slate-400 text-xs font-extrabold flex items-center justify-center flex-shrink-0 mt-0.5">6</div>
+        <!-- 2. RECRUITER NAVIGATION PANEL (Active when Recruiter is selected) -->
+        <nav id="sidebar-nav-recruiter" class="hidden space-y-1.5">
+          <!-- Recruiter Module 1: Reverse Pitch Sourcing -->
+          <button onclick="navigateToPersonaStep('recruiter', 1)" id="side-recruiter-item-1" class="sidebar-item active-cyan w-full text-left p-3 rounded-2xl border border-transparent flex items-start space-x-3 group">
+            <div class="step-num w-7 h-7 rounded-xl bg-cyan-500 text-slate-950 text-xs font-extrabold flex items-center justify-center flex-shrink-0 mt-0.5 shadow-sm">1</div>
             <div class="flex-1 min-w-0">
-              <div class="text-xs font-bold text-slate-300 group-hover:text-white flex items-center justify-between">
-                <span>Recruiter Sourcing</span>
-                <span class="text-[9px] px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-semibold border border-cyan-500/30">Hiring</span>
+              <div class="text-xs font-bold text-white flex items-center justify-between">
+                <span>Talent Sourcing</span>
+                <span class="text-[9px] px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-semibold border border-cyan-500/30">Pitch</span>
               </div>
-              <p class="text-[11px] text-slate-400 truncate mt-0.5">Reverse pitch & fast invites</p>
+              <p class="text-[11px] text-slate-400 truncate mt-0.5">Reverse query talent pool</p>
             </div>
           </button>
 
-          <!-- Step 7: TPO Command Center -->
-          <button onclick="navigateToStep(7)" id="sidebar-item-7" class="sidebar-item w-full text-left p-3 rounded-2xl border border-transparent flex items-start space-x-3 group">
-            <div class="step-num w-7 h-7 rounded-xl bg-slate-800 text-slate-400 text-xs font-extrabold flex items-center justify-center flex-shrink-0 mt-0.5">7</div>
+          <!-- Recruiter Module 2: Code Proof Inspector -->
+          <button onclick="navigateToPersonaStep('recruiter', 2)" id="side-recruiter-item-2" class="sidebar-item w-full text-left p-3 rounded-2xl border border-transparent flex items-start space-x-3 group">
+            <div class="step-num w-7 h-7 rounded-xl bg-slate-800 text-slate-400 text-xs font-extrabold flex items-center justify-center flex-shrink-0 mt-0.5">2</div>
             <div class="flex-1 min-w-0">
-              <div class="text-xs font-bold text-slate-300 group-hover:text-white flex items-center justify-between">
-                <span>TPO Cell Radar</span>
-                <span class="text-[9px] px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-semibold border border-indigo-500/30">TPO</span>
-              </div>
-              <p class="text-[11px] text-slate-400 truncate mt-0.5">Early warning & cohorts</p>
+              <div class="text-xs font-bold text-slate-300 group-hover:text-white">Code Proof Inspector</div>
+              <p class="text-[11px] text-slate-400 truncate mt-0.5">Authenticity & clone audit</p>
+            </div>
+          </button>
+
+          <!-- Recruiter Module 3: Fast-Track Candidate Tracker -->
+          <button onclick="navigateToPersonaStep('recruiter', 3)" id="side-recruiter-item-3" class="sidebar-item w-full text-left p-3 rounded-2xl border border-transparent flex items-start space-x-3 group">
+            <div class="step-num w-7 h-7 rounded-xl bg-slate-800 text-slate-400 text-xs font-extrabold flex items-center justify-center flex-shrink-0 mt-0.5">3</div>
+            <div class="flex-1 min-w-0">
+              <div class="text-xs font-bold text-slate-300 group-hover:text-white">Interview Shortlist</div>
+              <p class="text-[11px] text-slate-400 truncate mt-0.5">Direct Fast-Track pipeline</p>
+            </div>
+          </button>
+
+          <!-- Recruiter Module 4: Campus Drive Forensics -->
+          <button onclick="navigateToPersonaStep('recruiter', 4)" id="side-recruiter-item-4" class="sidebar-item w-full text-left p-3 rounded-2xl border border-transparent flex items-start space-x-3 group">
+            <div class="step-num w-7 h-7 rounded-xl bg-slate-800 text-slate-400 text-xs font-extrabold flex items-center justify-center flex-shrink-0 mt-0.5">4</div>
+            <div class="flex-1 min-w-0">
+              <div class="text-xs font-bold text-slate-300 group-hover:text-white">Drive Forensics</div>
+              <p class="text-[11px] text-slate-400 truncate mt-0.5">Cutoffs, CTC & round details</p>
             </div>
           </button>
         </nav>
+
+        <!-- 3. TPO NAVIGATION PANEL (Active when TPO is selected) -->
+        <nav id="sidebar-nav-tpo" class="hidden space-y-1.5">
+          <!-- TPO Module 1: Overview & KPIs -->
+          <button onclick="navigateToPersonaStep('tpo', 1)" id="side-tpo-item-1" class="sidebar-item active-indigo w-full text-left p-3 rounded-2xl border border-transparent flex items-start space-x-3 group">
+            <div class="step-num w-7 h-7 rounded-xl bg-indigo-500 text-white text-xs font-extrabold flex items-center justify-center flex-shrink-0 mt-0.5 shadow-sm">1</div>
+            <div class="flex-1 min-w-0">
+              <div class="text-xs font-bold text-white flex items-center justify-between">
+                <span>Placement KPIs</span>
+                <span class="text-[9px] px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-semibold border border-indigo-500/30">Admin</span>
+              </div>
+              <p class="text-[11px] text-slate-400 truncate mt-0.5">Batch stats & median CTC</p>
+            </div>
+          </button>
+
+          <!-- TPO Module 2: At-Risk Early Warning Radar -->
+          <button onclick="navigateToPersonaStep('tpo', 2)" id="side-tpo-item-2" class="sidebar-item w-full text-left p-3 rounded-2xl border border-transparent flex items-start space-x-3 group">
+            <div class="step-num w-7 h-7 rounded-xl bg-slate-800 text-slate-400 text-xs font-extrabold flex items-center justify-center flex-shrink-0 mt-0.5">2</div>
+            <div class="flex-1 min-w-0">
+              <div class="text-xs font-bold text-slate-300 group-hover:text-white">Early-Warning Radar</div>
+              <p class="text-[11px] text-slate-400 truncate mt-0.5">6-9 months pre-placement</p>
+            </div>
+          </button>
+
+          <!-- TPO Module 3: Automated Remediation Cohorts -->
+          <button onclick="navigateToPersonaStep('tpo', 3)" id="side-tpo-item-3" class="sidebar-item w-full text-left p-3 rounded-2xl border border-transparent flex items-start space-x-3 group">
+            <div class="step-num w-7 h-7 rounded-xl bg-slate-800 text-slate-400 text-xs font-extrabold flex items-center justify-center flex-shrink-0 mt-0.5">3</div>
+            <div class="flex-1 min-w-0">
+              <div class="text-xs font-bold text-slate-300 group-hover:text-white">Remediation Cohorts</div>
+              <p class="text-[11px] text-slate-400 truncate mt-0.5">Intervention bootcamps</p>
+            </div>
+          </button>
+        </nav>
+
       </div>
 
-      <!-- Bottom User Profile & Switch Bar -->
+      <!-- Bottom Profile & Role Quick Switch Bar -->
       <div class="p-4 border-t border-slate-800/80 bg-slate-950/90 space-y-3">
         <div class="flex items-center space-x-3 bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
           <div id="sidebar-user-avatar" class="w-8 h-8 rounded-lg bg-emerald-500 text-slate-950 font-extrabold text-sm flex items-center justify-center flex-shrink-0">A</div>
@@ -335,9 +390,9 @@
         <div class="flex items-center space-x-2">
           <button onclick="quickRoleSwitch()" class="flex-1 py-1.5 px-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-lg text-[11px] font-semibold text-slate-300 hover:text-white flex items-center justify-center space-x-1.5 transition-all">
             <i data-lucide="refresh-cw" class="w-3 h-3 text-cyan-400"></i>
-            <span id="sidebar-switch-label">Switch Persona</span>
+            <span id="sidebar-switch-label">Switch to Recruiter Desk</span>
           </button>
-          <button onclick="logout()" class="py-1.5 px-2.5 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-300 rounded-lg text-[11px] font-semibold flex items-center justify-center space-x-1 transition-all" title="Sign out to Page 1">
+          <button onclick="logout()" class="py-1.5 px-2.5 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-300 rounded-lg text-[11px] font-semibold flex items-center justify-center space-x-1 transition-all" title="Sign out to Gateway">
             <i data-lucide="log-out" class="w-3 h-3"></i>
           </button>
         </div>
@@ -345,25 +400,28 @@
 
     </aside>
 
-    <!-- RIGHT MAIN CONTENT: STEP PAGES -->
+    <!-- ==================== MAIN CONTENT AREA (STEP PAGES) ==================== -->
     <div id="step-content-area" class="flex-1 h-[calc(100vh-4rem)] overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6">
       
-      <!-- ==================== STEP PAGE 1: PLACEMENT ALERTS ==================== -->
-      <section id="step-page-1" class="step-page space-y-6">
-        <!-- Step 1 Header -->
+      <!-- ========================================================================= -->
+      <!-- SECTION A: STUDENT PORTAL PAGES (5 STEPS)                                  -->
+      <!-- ========================================================================= -->
+
+      <!-- [Student Step 1] Placement Alerts -->
+      <section id="page-student-1" class="step-page space-y-6">
         <div class="glass-card rounded-3xl p-6 sm:p-7 space-y-3 relative overflow-hidden border-emerald-500/30">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div class="flex items-center space-x-3">
               <span class="px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold">
-                Step 1 of 7
+                Student Step 1 of 5
               </span>
               <span class="text-xs text-slate-400 flex items-center gap-1.5">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                Real-Time Matched Stream
+                Live Matched Feed
               </span>
             </div>
             <div class="text-xs text-slate-400">
-              Active Candidate: <span id="alerts-student-name" class="font-bold text-white">Aarav Sharma</span>
+              Active Candidate: <span class="font-bold text-white">Aarav Sharma</span>
             </div>
           </div>
           <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
@@ -374,7 +432,6 @@
           </p>
         </div>
 
-        <!-- Alerts Content Container -->
         <div class="glass-card rounded-3xl p-6 sm:p-7 space-y-5">
           <div class="flex items-center justify-between border-b border-slate-800 pb-4">
             <h3 class="font-bold text-white text-base flex items-center gap-2">
@@ -384,56 +441,48 @@
             <span class="text-xs text-slate-400">1-Click Fast Apply Available</span>
           </div>
           <div id="alerts-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- Dynamic Alerts Injected Here -->
+            <!-- Injected via JS -->
           </div>
         </div>
 
-        <!-- Step 1 Navigation Footer -->
+        <!-- Student Step 1 Footer -->
         <div class="flex items-center justify-between pt-4 pb-8 border-t border-slate-800/80">
           <button disabled class="opacity-40 cursor-not-allowed px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs font-semibold text-slate-500 flex items-center space-x-1.5">
             <i data-lucide="arrow-left" class="w-4 h-4"></i>
             <span>Previous Step</span>
           </button>
-          
-          <!-- Step indicator dots -->
           <div class="flex items-center space-x-1.5">
-            <button onclick="navigateToStep(1)" class="w-7 h-7 rounded-lg bg-emerald-500 text-slate-950 font-bold text-xs">1</button>
-            <button onclick="navigateToStep(2)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">2</button>
-            <button onclick="navigateToStep(3)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">3</button>
-            <button onclick="navigateToStep(4)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">4</button>
-            <button onclick="navigateToStep(5)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">5</button>
-            <button onclick="navigateToStep(6)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">6</button>
-            <button onclick="navigateToStep(7)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">7</button>
+            <button onclick="navigateToPersonaStep('student', 1)" class="w-7 h-7 rounded-lg bg-emerald-500 text-slate-950 font-bold text-xs">1</button>
+            <button onclick="navigateToPersonaStep('student', 2)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">2</button>
+            <button onclick="navigateToPersonaStep('student', 3)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">3</button>
+            <button onclick="navigateToPersonaStep('student', 4)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">4</button>
+            <button onclick="navigateToPersonaStep('student', 5)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">5</button>
           </div>
-
-          <button onclick="navigateToStep(2)" class="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold flex items-center space-x-1.5 transition-all shadow-lg shadow-emerald-500/20">
+          <button onclick="navigateToPersonaStep('student', 2)" class="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold flex items-center space-x-1.5 transition-all shadow-lg shadow-emerald-500/20">
             <span>Next: Gap Diagnostic</span>
             <i data-lucide="arrow-right" class="w-4 h-4"></i>
           </button>
         </div>
       </section>
 
-      <!-- ==================== STEP PAGE 2: GAP DIAGNOSTIC & ROADMAP ==================== -->
-      <section id="step-page-2" class="step-page hidden space-y-6">
-        <!-- Step 2 Header -->
+      <!-- [Student Step 2] Gap Diagnostic & Roadmap -->
+      <section id="page-student-2" class="step-page hidden space-y-6">
         <div class="glass-card rounded-3xl p-6 sm:p-7 space-y-3 relative overflow-hidden border-emerald-500/30">
           <div class="flex items-center space-x-3">
             <span class="px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold">
-              Step 2 of 7
+              Student Step 2 of 5
             </span>
-            <span class="text-xs text-slate-400">Eligibility Diagnostic Engine</span>
+            <span class="text-xs text-slate-400">Criteria Gap Diagnostic Engine</span>
           </div>
           <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
             Eligibility & Gap Diagnostic with Curated Free Resources
           </h2>
           <p class="text-sm text-slate-300 max-w-2xl leading-relaxed">
-            Diagnose exact qualification bottlenecks between your student profile and target company drive criteria. Generates a personalized 4-week recovery roadmap and free high-yield learning links.
+            Diagnose qualification gaps between your profile and target company drive criteria. Generates a personalized 4-week recovery roadmap and free high-yield learning links.
           </p>
         </div>
 
-        <!-- Diagnostic Workspace -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <!-- Input Selector Card -->
           <div class="glass-card rounded-2xl p-6 shadow-xl space-y-5">
             <div class="flex items-center space-x-3 border-b border-slate-800 pb-4">
               <div class="w-9 h-9 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
@@ -448,14 +497,14 @@
             <div>
               <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Student Profile</label>
               <select id="diag-student-select" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-emerald-500">
-                <!-- Seed students populated via JS -->
+                <!-- Injected via JS -->
               </select>
             </div>
 
             <div>
               <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Target Campus Drive</label>
               <select id="diag-company-select" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-emerald-500">
-                <!-- Seed drives populated via JS -->
+                <!-- Injected via JS -->
               </select>
             </div>
 
@@ -465,7 +514,6 @@
             </button>
           </div>
 
-          <!-- Diagnostic Results & Level-Up Plan -->
           <div class="lg:col-span-2 glass-card rounded-2xl p-6 shadow-xl space-y-6">
             <div class="flex items-center justify-between border-b border-slate-800 pb-4">
               <h3 class="font-bold text-white flex items-center gap-2">
@@ -475,12 +523,10 @@
               <span id="eligibility-badge" class="px-3 py-1 rounded-full text-xs font-semibold bg-slate-800 text-slate-400">Awaiting Check</span>
             </div>
 
-            <!-- Gaps Found Container -->
             <div id="gaps-container" class="space-y-3">
               <div class="text-sm text-slate-400 text-center py-6">Select a student and target company on the left, then click "Run AI Gap Analysis".</div>
             </div>
 
-            <!-- Free Curated Resources -->
             <div id="resources-section" class="hidden space-y-3 pt-4 border-t border-slate-800">
               <h4 class="text-sm font-bold text-cyan-400 flex items-center gap-2">
                 <i data-lucide="book-open-check" class="w-4 h-4"></i>
@@ -489,7 +535,6 @@
               <div id="resources-container" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
             </div>
 
-            <!-- 4-Week Level-Up Plan -->
             <div id="roadmap-section" class="hidden space-y-4 pt-4 border-t border-slate-800">
               <h4 class="text-sm font-bold text-emerald-400 flex items-center gap-2">
                 <i data-lucide="calendar" class="w-4 h-4"></i>
@@ -500,37 +545,32 @@
           </div>
         </div>
 
-        <!-- Step 2 Navigation Footer -->
+        <!-- Student Step 2 Footer -->
         <div class="flex items-center justify-between pt-4 pb-8 border-t border-slate-800/80">
-          <button onclick="navigateToStep(1)" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-slate-300 flex items-center space-x-1.5 transition-all">
+          <button onclick="navigateToPersonaStep('student', 1)" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-slate-300 flex items-center space-x-1.5 transition-all">
             <i data-lucide="arrow-left" class="w-4 h-4"></i>
             <span>Previous: Alerts</span>
           </button>
-          
           <div class="flex items-center space-x-1.5">
-            <button onclick="navigateToStep(1)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">1</button>
-            <button onclick="navigateToStep(2)" class="w-7 h-7 rounded-lg bg-emerald-500 text-slate-950 font-bold text-xs">2</button>
-            <button onclick="navigateToStep(3)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">3</button>
-            <button onclick="navigateToStep(4)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">4</button>
-            <button onclick="navigateToStep(5)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">5</button>
-            <button onclick="navigateToStep(6)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">6</button>
-            <button onclick="navigateToStep(7)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">7</button>
+            <button onclick="navigateToPersonaStep('student', 1)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">1</button>
+            <button onclick="navigateToPersonaStep('student', 2)" class="w-7 h-7 rounded-lg bg-emerald-500 text-slate-950 font-bold text-xs">2</button>
+            <button onclick="navigateToPersonaStep('student', 3)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">3</button>
+            <button onclick="navigateToPersonaStep('student', 4)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">4</button>
+            <button onclick="navigateToPersonaStep('student', 5)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">5</button>
           </div>
-
-          <button onclick="navigateToStep(3)" class="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold flex items-center space-x-1.5 transition-all shadow-lg shadow-emerald-500/20">
+          <button onclick="navigateToPersonaStep('student', 3)" class="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold flex items-center space-x-1.5 transition-all shadow-lg shadow-emerald-500/20">
             <span>Next: GitHub Audit</span>
             <i data-lucide="arrow-right" class="w-4 h-4"></i>
           </button>
         </div>
       </section>
 
-      <!-- ==================== STEP PAGE 3: GITHUB AUTHENTICITY ==================== -->
-      <section id="step-page-3" class="step-page hidden space-y-6">
-        <!-- Step 3 Header -->
+      <!-- [Student Step 3] GitHub Project Authenticity -->
+      <section id="page-student-3" class="step-page hidden space-y-6">
         <div class="glass-card rounded-3xl p-6 sm:p-7 space-y-3 relative overflow-hidden border-cyan-500/30">
           <div class="flex items-center space-x-3">
             <span class="px-3 py-1 rounded-full bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 text-xs font-bold">
-              Step 3 of 7
+              Student Step 3 of 5
             </span>
             <span class="text-xs text-slate-400">Proof-of-Work Verification</span>
           </div>
@@ -538,11 +578,10 @@
             GitHub Profile & Project Authenticity Validator
           </h2>
           <p class="text-sm text-slate-300 max-w-2xl leading-relaxed">
-            Combats tutorial clones and resume embellishment by validating multi-month commit cadence, real architectural depth, test coverage, and awarding verified Proof-of-Work badges.
+            Combats tutorial clones by validating multi-month commit cadence, real architectural depth, test coverage, and awarding verified Proof-of-Work badges.
           </p>
         </div>
 
-        <!-- GitHub Inspector Card -->
         <div class="glass-card rounded-2xl p-6 sm:p-7 shadow-xl space-y-6">
           <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
             <div class="flex items-center space-x-3">
@@ -564,46 +603,38 @@
             </div>
           </div>
 
-          <!-- Audit Results Output Container -->
-          <div id="github-results-container" class="hidden space-y-4">
-            <!-- Dynamic GitHub Score & Breakdown Injected Here -->
-          </div>
+          <div id="github-results-container" class="hidden space-y-4"></div>
           <div id="github-placeholder-prompt" class="text-center py-10 text-slate-400 text-sm">
             Click <strong class="text-cyan-400">"Audit Authenticity"</strong> above to run forensics on commit distribution, clone markers, and proof-of-work authenticity.
           </div>
         </div>
 
-        <!-- Step 3 Navigation Footer -->
+        <!-- Student Step 3 Footer -->
         <div class="flex items-center justify-between pt-4 pb-8 border-t border-slate-800/80">
-          <button onclick="navigateToStep(2)" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-slate-300 flex items-center space-x-1.5 transition-all">
+          <button onclick="navigateToPersonaStep('student', 2)" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-slate-300 flex items-center space-x-1.5 transition-all">
             <i data-lucide="arrow-left" class="w-4 h-4"></i>
             <span>Previous: Gap Diagnostic</span>
           </button>
-          
           <div class="flex items-center space-x-1.5">
-            <button onclick="navigateToStep(1)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">1</button>
-            <button onclick="navigateToStep(2)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">2</button>
-            <button onclick="navigateToStep(3)" class="w-7 h-7 rounded-lg bg-cyan-500 text-slate-950 font-bold text-xs">3</button>
-            <button onclick="navigateToStep(4)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">4</button>
-            <button onclick="navigateToStep(5)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">5</button>
-            <button onclick="navigateToStep(6)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">6</button>
-            <button onclick="navigateToStep(7)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">7</button>
+            <button onclick="navigateToPersonaStep('student', 1)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">1</button>
+            <button onclick="navigateToPersonaStep('student', 2)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">2</button>
+            <button onclick="navigateToPersonaStep('student', 3)" class="w-7 h-7 rounded-lg bg-emerald-500 text-slate-950 font-bold text-xs">3</button>
+            <button onclick="navigateToPersonaStep('student', 4)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">4</button>
+            <button onclick="navigateToPersonaStep('student', 5)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">5</button>
           </div>
-
-          <button onclick="navigateToStep(4)" class="px-5 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold flex items-center space-x-1.5 transition-all shadow-lg shadow-cyan-500/20">
+          <button onclick="navigateToPersonaStep('student', 4)" class="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold flex items-center space-x-1.5 transition-all shadow-lg shadow-emerald-500/20">
             <span>Next: AI Mock Coach</span>
             <i data-lucide="arrow-right" class="w-4 h-4"></i>
           </button>
         </div>
       </section>
 
-      <!-- ==================== STEP PAGE 4: AI MOCK INTERVIEW COACH ==================== -->
-      <section id="step-page-4" class="step-page hidden space-y-6">
-        <!-- Step 4 Header -->
+      <!-- [Student Step 4] AI Mock Interview Coach -->
+      <section id="page-student-4" class="step-page hidden space-y-6">
         <div class="glass-card rounded-3xl p-6 sm:p-7 space-y-3 relative overflow-hidden border-pink-500/30">
           <div class="flex items-center space-x-3">
             <span class="px-3 py-1 rounded-full bg-pink-500/20 border border-pink-500/40 text-pink-300 text-xs font-bold">
-              Step 4 of 7
+              Student Step 4 of 5
             </span>
             <span class="text-xs text-slate-400">STAR Behavioral & Technical AI Coach</span>
           </div>
@@ -615,7 +646,6 @@
           </p>
         </div>
 
-        <!-- Coach Card -->
         <div class="glass-card rounded-2xl p-6 sm:p-7 shadow-xl space-y-5 max-w-3xl mx-auto">
           <div class="flex items-center space-x-3 border-b border-slate-800 pb-4">
             <div class="w-9 h-9 rounded-lg bg-pink-500/10 border border-pink-500/20 flex items-center justify-center text-pink-400">
@@ -662,37 +692,32 @@
           </div>
         </div>
 
-        <!-- Step 4 Navigation Footer -->
+        <!-- Student Step 4 Footer -->
         <div class="flex items-center justify-between pt-4 pb-8 border-t border-slate-800/80">
-          <button onclick="navigateToStep(3)" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-slate-300 flex items-center space-x-1.5 transition-all">
+          <button onclick="navigateToPersonaStep('student', 3)" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-slate-300 flex items-center space-x-1.5 transition-all">
             <i data-lucide="arrow-left" class="w-4 h-4"></i>
             <span>Previous: GitHub Audit</span>
           </button>
-          
           <div class="flex items-center space-x-1.5">
-            <button onclick="navigateToStep(1)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">1</button>
-            <button onclick="navigateToStep(2)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">2</button>
-            <button onclick="navigateToStep(3)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">3</button>
-            <button onclick="navigateToStep(4)" class="w-7 h-7 rounded-lg bg-pink-500 text-white font-bold text-xs">4</button>
-            <button onclick="navigateToStep(5)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">5</button>
-            <button onclick="navigateToStep(6)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">6</button>
-            <button onclick="navigateToStep(7)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">7</button>
+            <button onclick="navigateToPersonaStep('student', 1)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">1</button>
+            <button onclick="navigateToPersonaStep('student', 2)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">2</button>
+            <button onclick="navigateToPersonaStep('student', 3)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">3</button>
+            <button onclick="navigateToPersonaStep('student', 4)" class="w-7 h-7 rounded-lg bg-emerald-500 text-slate-950 font-bold text-xs">4</button>
+            <button onclick="navigateToPersonaStep('student', 5)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">5</button>
           </div>
-
-          <button onclick="navigateToStep(5)" class="px-5 py-2.5 rounded-xl bg-pink-500 hover:bg-pink-400 text-white text-xs font-bold flex items-center space-x-1.5 transition-all shadow-lg shadow-pink-500/20">
+          <button onclick="navigateToPersonaStep('student', 5)" class="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold flex items-center space-x-1.5 transition-all shadow-lg shadow-emerald-500/20">
             <span>Next: Alumni Bridge</span>
             <i data-lucide="arrow-right" class="w-4 h-4"></i>
           </button>
         </div>
       </section>
 
-      <!-- ==================== STEP PAGE 5: ALUMNI REFERRAL BRIDGE ==================== -->
-      <section id="step-page-5" class="step-page hidden space-y-6">
-        <!-- Step 5 Header -->
+      <!-- [Student Step 5] Alumni Referral Bridge -->
+      <section id="page-student-5" class="step-page hidden space-y-6">
         <div class="glass-card rounded-3xl p-6 sm:p-7 space-y-3 relative overflow-hidden border-amber-500/30">
           <div class="flex items-center space-x-3">
             <span class="px-3 py-1 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-bold">
-              Step 5 of 7
+              Student Step 5 of 5
             </span>
             <span class="text-xs text-slate-400">Campus Alumni Network</span>
           </div>
@@ -704,7 +729,6 @@
           </p>
         </div>
 
-        <!-- Alumni Cards Container -->
         <div class="glass-card rounded-2xl p-6 sm:p-7 shadow-xl space-y-5">
           <div class="flex items-center justify-between border-b border-slate-800 pb-4">
             <div class="flex items-center space-x-3">
@@ -718,43 +742,39 @@
             </div>
             <span class="text-xs text-amber-300 bg-amber-500/15 border border-amber-500/30 px-3 py-1 rounded-full font-semibold">Verified Mentors</span>
           </div>
-
-          <div id="alumni-cards-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- Populated via JS -->
-          </div>
+          <div id="alumni-cards-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
         </div>
 
-        <!-- Step 5 Navigation Footer -->
+        <!-- Student Step 5 Footer -->
         <div class="flex items-center justify-between pt-4 pb-8 border-t border-slate-800/80">
-          <button onclick="navigateToStep(4)" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-slate-300 flex items-center space-x-1.5 transition-all">
+          <button onclick="navigateToPersonaStep('student', 4)" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-slate-300 flex items-center space-x-1.5 transition-all">
             <i data-lucide="arrow-left" class="w-4 h-4"></i>
             <span>Previous: AI Mock Coach</span>
           </button>
-          
           <div class="flex items-center space-x-1.5">
-            <button onclick="navigateToStep(1)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">1</button>
-            <button onclick="navigateToStep(2)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">2</button>
-            <button onclick="navigateToStep(3)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">3</button>
-            <button onclick="navigateToStep(4)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">4</button>
-            <button onclick="navigateToStep(5)" class="w-7 h-7 rounded-lg bg-amber-500 text-slate-950 font-bold text-xs">5</button>
-            <button onclick="navigateToStep(6)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">6</button>
-            <button onclick="navigateToStep(7)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">7</button>
+            <button onclick="navigateToPersonaStep('student', 1)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">1</button>
+            <button onclick="navigateToPersonaStep('student', 2)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">2</button>
+            <button onclick="navigateToPersonaStep('student', 3)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">3</button>
+            <button onclick="navigateToPersonaStep('student', 4)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">4</button>
+            <button onclick="navigateToPersonaStep('student', 5)" class="w-7 h-7 rounded-lg bg-emerald-500 text-slate-950 font-bold text-xs">5</button>
           </div>
-
-          <button onclick="navigateToStep(6)" class="px-5 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold flex items-center space-x-1.5 transition-all shadow-lg shadow-cyan-500/20">
-            <span>Next: Recruiter Sourcing</span>
-            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          <button onclick="navigateToPersonaStep('student', 1)" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold flex items-center space-x-1.5 transition-all">
+            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+            <span>Return to Step 1</span>
           </button>
         </div>
       </section>
 
-      <!-- ==================== STEP PAGE 6: RECRUITER REVERSE PITCH ==================== -->
-      <section id="step-page-6" class="step-page hidden space-y-6">
-        <!-- Step 6 Header -->
+      <!-- ========================================================================= -->
+      <!-- SECTION B: RECRUITER DESK PAGES (4 MODULES)                                -->
+      <!-- ========================================================================= -->
+
+      <!-- [Recruiter Module 1] Reverse Pitch Sourcing -->
+      <section id="page-recruiter-1" class="step-page hidden space-y-6">
         <div class="glass-card rounded-3xl p-6 sm:p-7 space-y-3 relative overflow-hidden border-cyan-500/30">
           <div class="flex items-center space-x-3">
             <span class="px-3 py-1 rounded-full bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 text-xs font-bold">
-              Step 6 of 7 • Recruiter Mode
+              Recruiter Module 1 of 4
             </span>
             <span class="text-xs text-slate-400">Direct Candidate Search & Fast-Track</span>
           </div>
@@ -762,7 +782,7 @@
             Recruiter Reverse Pitch & Talent Sourcing
           </h2>
           <p class="text-sm text-slate-300 max-w-2xl leading-relaxed">
-            Eliminate traditional resume stacks. Search verified talent by technical proof-of-work, department, and CGPA, and directly issue Fast-Track interview invitations.
+            Eliminate traditional resume screening. Directly query verified campus talent by technical proof-of-work, department, and CGPA, and dispatch Fast-Track interview invitations.
           </p>
         </div>
 
@@ -816,59 +836,269 @@
             </h4>
             <span id="candidate-count-badge" class="text-xs bg-slate-900 text-cyan-300 px-3 py-1 rounded-full border border-slate-800">0 matches</span>
           </div>
-          <div id="candidates-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <!-- Populated via JS -->
-          </div>
+          <div id="candidates-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
         </div>
 
-        <!-- Step 6 Navigation Footer -->
+        <!-- Recruiter Module 1 Footer -->
         <div class="flex items-center justify-between pt-4 pb-8 border-t border-slate-800/80">
-          <button onclick="navigateToStep(5)" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-slate-300 flex items-center space-x-1.5 transition-all">
+          <button disabled class="opacity-40 cursor-not-allowed px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs font-semibold text-slate-500 flex items-center space-x-1.5">
             <i data-lucide="arrow-left" class="w-4 h-4"></i>
-            <span>Previous: Alumni Bridge</span>
+            <span>Previous Module</span>
           </button>
-          
           <div class="flex items-center space-x-1.5">
-            <button onclick="navigateToStep(1)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">1</button>
-            <button onclick="navigateToStep(2)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">2</button>
-            <button onclick="navigateToStep(3)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">3</button>
-            <button onclick="navigateToStep(4)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">4</button>
-            <button onclick="navigateToStep(5)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">5</button>
-            <button onclick="navigateToStep(6)" class="w-7 h-7 rounded-lg bg-cyan-500 text-slate-950 font-bold text-xs">6</button>
-            <button onclick="navigateToStep(7)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">7</button>
+            <button onclick="navigateToPersonaStep('recruiter', 1)" class="w-7 h-7 rounded-lg bg-cyan-500 text-slate-950 font-bold text-xs">1</button>
+            <button onclick="navigateToPersonaStep('recruiter', 2)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">2</button>
+            <button onclick="navigateToPersonaStep('recruiter', 3)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">3</button>
+            <button onclick="navigateToPersonaStep('recruiter', 4)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">4</button>
           </div>
-
-          <button onclick="navigateToStep(7)" class="px-5 py-2.5 rounded-xl bg-indigo-500 hover:bg-indigo-400 text-white text-xs font-bold flex items-center space-x-1.5 transition-all shadow-lg shadow-indigo-500/20">
-            <span>Next: TPO Cell Radar</span>
+          <button onclick="navigateToPersonaStep('recruiter', 2)" class="px-5 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold flex items-center space-x-1.5 transition-all shadow-lg shadow-cyan-500/20">
+            <span>Next: Code Inspector</span>
             <i data-lucide="arrow-right" class="w-4 h-4"></i>
           </button>
         </div>
       </section>
 
-      <!-- ==================== STEP PAGE 7: TPO COMMAND CENTER ==================== -->
-      <section id="step-page-7" class="step-page hidden space-y-6">
-        <!-- Step 7 Header -->
-        <div class="glass-card rounded-3xl p-6 sm:p-7 space-y-3 relative overflow-hidden border-indigo-500/30">
+      <!-- [Recruiter Module 2] Code Proof Inspector -->
+      <section id="page-recruiter-2" class="step-page hidden space-y-6">
+        <div class="glass-card rounded-3xl p-6 sm:p-7 space-y-3 relative overflow-hidden border-cyan-500/30">
           <div class="flex items-center space-x-3">
-            <span class="px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-500/40 text-indigo-300 text-xs font-bold">
-              Step 7 of 7 • Training & Placement Officer (TPO)
+            <span class="px-3 py-1 rounded-full bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 text-xs font-bold">
+              Recruiter Module 2 of 4
             </span>
-            <span class="text-xs text-slate-400">Campus Placement Command Center</span>
+            <span class="text-xs text-slate-400">Technical Forensics</span>
           </div>
           <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-            TPO Cell Command Center & Early-Warning Radar
+            Candidate Proof-of-Work & Code Inspector
           </h2>
           <p class="text-sm text-slate-300 max-w-2xl leading-relaxed">
-            The institutional control tower for the college Training and Placement Cell. Identifies students at risk 6–9 months before campus drives and automates enrollment into targeted remediation cohorts.
+            Audit candidate codebases before conducting live interviews. Verify whether the applicant actually wrote their project or copied a tutorial clone.
           </p>
         </div>
 
-        <!-- KPI Overview Cards -->
-        <div id="tpo-kpi-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <!-- Populated via JS -->
+        <div class="glass-card rounded-2xl p-6 sm:p-7 shadow-xl space-y-6">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 font-bold">
+                <i data-lucide="shield-alert" class="w-6 h-6"></i>
+              </div>
+              <div>
+                <h3 class="font-bold text-white text-base">GitHub Candidate Forensics</h3>
+                <p class="text-xs text-slate-400">Inspect git commit frequencies, test coverage, and architecture depth</p>
+              </div>
+            </div>
+            <div class="flex flex-wrap items-center gap-3">
+              <input id="recruiter-github-user" type="text" value="aarav-dev" placeholder="GitHub username" class="bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-cyan-500 w-52">
+              <input id="recruiter-github-repo" type="text" value="careernexus-core" placeholder="Repo name or url" class="bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-cyan-500 w-56">
+              <button onclick="runRecruiterGitHubAudit()" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-4 py-2.5 rounded-xl text-sm transition-all flex items-center space-x-2 shadow-lg shadow-cyan-500/20">
+                <i data-lucide="search" class="w-4 h-4"></i>
+                <span>Audit Repository</span>
+              </button>
+            </div>
+          </div>
+
+          <div id="recruiter-github-results" class="hidden space-y-4"></div>
+          <div id="recruiter-github-placeholder" class="text-center py-10 text-slate-400 text-sm">
+            Click <strong class="text-cyan-400">"Audit Repository"</strong> above to inspect candidate code architecture, commit history, and clone probability.
+          </div>
         </div>
 
-        <!-- At-Risk Early Warning Radar -->
+        <!-- Recruiter Module 2 Footer -->
+        <div class="flex items-center justify-between pt-4 pb-8 border-t border-slate-800/80">
+          <button onclick="navigateToPersonaStep('recruiter', 1)" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-slate-300 flex items-center space-x-1.5 transition-all">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            <span>Previous: Sourcing</span>
+          </button>
+          <div class="flex items-center space-x-1.5">
+            <button onclick="navigateToPersonaStep('recruiter', 1)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">1</button>
+            <button onclick="navigateToPersonaStep('recruiter', 2)" class="w-7 h-7 rounded-lg bg-cyan-500 text-slate-950 font-bold text-xs">2</button>
+            <button onclick="navigateToPersonaStep('recruiter', 3)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">3</button>
+            <button onclick="navigateToPersonaStep('recruiter', 4)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">4</button>
+          </div>
+          <button onclick="navigateToPersonaStep('recruiter', 3)" class="px-5 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold flex items-center space-x-1.5 transition-all shadow-lg shadow-cyan-500/20">
+            <span>Next: Interview Pipeline</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </section>
+
+      <!-- [Recruiter Module 3] Fast-Track Candidate Tracker -->
+      <section id="page-recruiter-3" class="step-page hidden space-y-6">
+        <div class="glass-card rounded-3xl p-6 sm:p-7 space-y-3 relative overflow-hidden border-cyan-500/30">
+          <div class="flex items-center space-x-3">
+            <span class="px-3 py-1 rounded-full bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 text-xs font-bold">
+              Recruiter Module 3 of 4
+            </span>
+            <span class="text-xs text-slate-400">Interview Pipeline</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+            Fast-Track Candidate Tracker & Pipeline
+          </h2>
+          <p class="text-sm text-slate-300 max-w-2xl leading-relaxed">
+            Manage your company's active candidate shortlist. Track students invited through reverse pitch sourcing across recruitment stages.
+          </p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-6 shadow-xl space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+            <h3 class="font-bold text-white text-base flex items-center gap-2">
+              <i data-lucide="user-check" class="w-5 h-5 text-cyan-400"></i>
+              Active Candidate Shortlist
+            </h3>
+            <span class="text-xs text-cyan-400 bg-cyan-500/10 border border-cyan-500/30 px-3 py-1 rounded-full font-semibold">Live Pipeline</span>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm text-slate-300">
+              <thead class="text-xs uppercase bg-slate-900/60 text-slate-400 border-b border-slate-800">
+                <tr>
+                  <th class="px-4 py-3">Student Name</th>
+                  <th class="px-4 py-3">Department</th>
+                  <th class="px-4 py-3">CGPA</th>
+                  <th class="px-4 py-3">Proof Score</th>
+                  <th class="px-4 py-3">Target Drive</th>
+                  <th class="px-4 py-3">Interview Stage</th>
+                  <th class="px-4 py-3">Action</th>
+                </tr>
+              </thead>
+              <tbody id="recruiter-pipeline-tbody" class="divide-y divide-slate-800">
+                <!-- Injected via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Recruiter Module 3 Footer -->
+        <div class="flex items-center justify-between pt-4 pb-8 border-t border-slate-800/80">
+          <button onclick="navigateToPersonaStep('recruiter', 2)" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-slate-300 flex items-center space-x-1.5 transition-all">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            <span>Previous: Code Inspector</span>
+          </button>
+          <div class="flex items-center space-x-1.5">
+            <button onclick="navigateToPersonaStep('recruiter', 1)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">1</button>
+            <button onclick="navigateToPersonaStep('recruiter', 2)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">2</button>
+            <button onclick="navigateToPersonaStep('recruiter', 3)" class="w-7 h-7 rounded-lg bg-cyan-500 text-slate-950 font-bold text-xs">3</button>
+            <button onclick="navigateToPersonaStep('recruiter', 4)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">4</button>
+          </div>
+          <button onclick="navigateToPersonaStep('recruiter', 4)" class="px-5 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold flex items-center space-x-1.5 transition-all shadow-lg shadow-cyan-500/20">
+            <span>Next: Drive Forensics</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </section>
+
+      <!-- [Recruiter Module 4] Drive Forensics & Criteria Manager -->
+      <section id="page-recruiter-4" class="step-page hidden space-y-6">
+        <div class="glass-card rounded-3xl p-6 sm:p-7 space-y-3 relative overflow-hidden border-cyan-500/30">
+          <div class="flex items-center space-x-3">
+            <span class="px-3 py-1 rounded-full bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 text-xs font-bold">
+              Recruiter Module 4 of 4
+            </span>
+            <span class="text-xs text-slate-400">Campus Drive Configuration</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+            Campus Drive Forensics & Criteria Manager
+          </h2>
+          <p class="text-sm text-slate-300 max-w-2xl leading-relaxed">
+            Review company drive parameters, rounds structure, historical selection rates, and interviewer battle card guidelines.
+          </p>
+        </div>
+
+        <!-- Drive Selection Bar -->
+        <div class="glass-card rounded-2xl p-6 shadow-xl space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+            <h3 class="font-bold text-white text-base flex items-center gap-2">
+              <i data-lucide="briefcase" class="w-5 h-5 text-cyan-400"></i>
+              Select Campus Drive
+            </h3>
+            <select id="recruiter-drive-select" onchange="loadRecruiterDriveForensics()" class="bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-cyan-500 w-72">
+              <!-- Injected via JS -->
+            </select>
+          </div>
+
+          <!-- Forensics Card Display -->
+          <div id="recruiter-forensics-display" class="space-y-5">
+            <!-- Dynamic Drive Forensics Injected Here -->
+          </div>
+        </div>
+
+        <!-- Recruiter Module 4 Footer -->
+        <div class="flex items-center justify-between pt-4 pb-8 border-t border-slate-800/80">
+          <button onclick="navigateToPersonaStep('recruiter', 3)" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-slate-300 flex items-center space-x-1.5 transition-all">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            <span>Previous: Interview Pipeline</span>
+          </button>
+          <div class="flex items-center space-x-1.5">
+            <button onclick="navigateToPersonaStep('recruiter', 1)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">1</button>
+            <button onclick="navigateToPersonaStep('recruiter', 2)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">2</button>
+            <button onclick="navigateToPersonaStep('recruiter', 3)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">3</button>
+            <button onclick="navigateToPersonaStep('recruiter', 4)" class="w-7 h-7 rounded-lg bg-cyan-500 text-slate-950 font-bold text-xs">4</button>
+          </div>
+          <button onclick="navigateToPersonaStep('recruiter', 1)" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold flex items-center space-x-1.5 transition-all">
+            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+            <span>Return to Module 1</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- ========================================================================= -->
+      <!-- SECTION C: TPO CELL COMMAND CENTER PAGES (3 MODULES)                       -->
+      <!-- ========================================================================= -->
+
+      <!-- [TPO Module 1] Batch Overview & KPIs -->
+      <section id="page-tpo-1" class="step-page hidden space-y-6">
+        <div class="glass-card rounded-3xl p-6 sm:p-7 space-y-3 relative overflow-hidden border-indigo-500/30">
+          <div class="flex items-center space-x-3">
+            <span class="px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-500/40 text-indigo-300 text-xs font-bold">
+              TPO Module 1 of 3
+            </span>
+            <span class="text-xs text-slate-400">Institutional Dashboard</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+            Campus Placement Overview & Key Performance Indicators
+          </h2>
+          <p class="text-sm text-slate-300 max-w-2xl leading-relaxed">
+            Overall recruitment health of the graduating batch, including active placement percentage, median CTC, and department distribution.
+          </p>
+        </div>
+
+        <!-- KPI Grid -->
+        <div id="tpo-kpi-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+
+        <!-- TPO Module 1 Footer -->
+        <div class="flex items-center justify-between pt-4 pb-8 border-t border-slate-800/80">
+          <button disabled class="opacity-40 cursor-not-allowed px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs font-semibold text-slate-500 flex items-center space-x-1.5">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            <span>Previous Module</span>
+          </button>
+          <div class="flex items-center space-x-1.5">
+            <button onclick="navigateToPersonaStep('tpo', 1)" class="w-7 h-7 rounded-lg bg-indigo-500 text-white font-bold text-xs">1</button>
+            <button onclick="navigateToPersonaStep('tpo', 2)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">2</button>
+            <button onclick="navigateToPersonaStep('tpo', 3)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">3</button>
+          </div>
+          <button onclick="navigateToPersonaStep('tpo', 2)" class="px-5 py-2.5 rounded-xl bg-indigo-500 hover:bg-indigo-400 text-white text-xs font-bold flex items-center space-x-1.5 transition-all shadow-lg shadow-indigo-500/20">
+            <span>Next: Early-Warning Radar</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </section>
+
+      <!-- [TPO Module 2] At-Risk Early Warning Radar -->
+      <section id="page-tpo-2" class="step-page hidden space-y-6">
+        <div class="glass-card rounded-3xl p-6 sm:p-7 space-y-3 relative overflow-hidden border-indigo-500/30">
+          <div class="flex items-center space-x-3">
+            <span class="px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-500/40 text-indigo-300 text-xs font-bold">
+              TPO Module 2 of 3
+            </span>
+            <span class="text-xs text-slate-400">Pre-Placement Intervention</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+            At-Risk Student Early-Warning Radar
+          </h2>
+          <p class="text-sm text-slate-300 max-w-2xl leading-relaxed">
+            Identifies students at risk 6–9 months before campus drives arrive. Flags low CGPA, active backlogs, and missing code proof for targeted remediation.
+          </p>
+        </div>
+
         <div class="glass-card rounded-2xl p-6 shadow-xl space-y-4">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
             <div class="flex items-center space-x-3">
@@ -896,44 +1126,68 @@
                   <th class="px-4 py-3">Remediation Action</th>
                 </tr>
               </thead>
-              <tbody id="tpo-at-risk-tbody" class="divide-y divide-slate-800">
-                <!-- Populated via JS -->
-              </tbody>
+              <tbody id="tpo-at-risk-tbody" class="divide-y divide-slate-800"></tbody>
             </table>
           </div>
         </div>
 
-        <!-- Active Remediation Cohorts -->
-        <div class="glass-card rounded-2xl p-6 shadow-xl space-y-4">
-          <h3 class="font-bold text-white flex items-center gap-2">
-            <i data-lucide="layers" class="w-5 h-5 text-emerald-400"></i>
-            Active Automated Remediation Cohorts
-          </h3>
-          <div id="cohorts-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- Populated via JS -->
+        <!-- TPO Module 2 Footer -->
+        <div class="flex items-center justify-between pt-4 pb-8 border-t border-slate-800/80">
+          <button onclick="navigateToPersonaStep('tpo', 1)" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-slate-300 flex items-center space-x-1.5 transition-all">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            <span>Previous: KPIs</span>
+          </button>
+          <div class="flex items-center space-x-1.5">
+            <button onclick="navigateToPersonaStep('tpo', 1)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">1</button>
+            <button onclick="navigateToPersonaStep('tpo', 2)" class="w-7 h-7 rounded-lg bg-indigo-500 text-white font-bold text-xs">2</button>
+            <button onclick="navigateToPersonaStep('tpo', 3)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">3</button>
           </div>
+          <button onclick="navigateToPersonaStep('tpo', 3)" class="px-5 py-2.5 rounded-xl bg-indigo-500 hover:bg-indigo-400 text-white text-xs font-bold flex items-center space-x-1.5 transition-all shadow-lg shadow-indigo-500/20">
+            <span>Next: Remediation Cohorts</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </section>
+
+      <!-- [TPO Module 3] Automated Remediation Cohorts -->
+      <section id="page-tpo-3" class="step-page hidden space-y-6">
+        <div class="glass-card rounded-3xl p-6 sm:p-7 space-y-3 relative overflow-hidden border-indigo-500/30">
+          <div class="flex items-center space-x-3">
+            <span class="px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-500/40 text-indigo-300 text-xs font-bold">
+              TPO Module 3 of 3
+            </span>
+            <span class="text-xs text-slate-400">Recovery Camps</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+            Active Automated Remediation Cohorts
+          </h2>
+          <p class="text-sm text-slate-300 max-w-2xl leading-relaxed">
+            Targeted skill camps with assigned faculty and alumni mentors designed to prepare at-risk students before placement drives commence.
+          </p>
         </div>
 
-        <!-- Step 7 Navigation Footer -->
-        <div class="flex items-center justify-between pt-4 pb-8 border-t border-slate-800/80">
-          <button onclick="navigateToStep(6)" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-slate-300 flex items-center space-x-1.5 transition-all">
-            <i data-lucide="arrow-left" class="w-4 h-4"></i>
-            <span>Previous: Recruiter Sourcing</span>
-          </button>
-          
-          <div class="flex items-center space-x-1.5">
-            <button onclick="navigateToStep(1)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">1</button>
-            <button onclick="navigateToStep(2)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">2</button>
-            <button onclick="navigateToStep(3)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">3</button>
-            <button onclick="navigateToStep(4)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">4</button>
-            <button onclick="navigateToStep(5)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">5</button>
-            <button onclick="navigateToStep(6)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">6</button>
-            <button onclick="navigateToStep(7)" class="w-7 h-7 rounded-lg bg-indigo-500 text-white font-bold text-xs">7</button>
-          </div>
+        <div class="glass-card rounded-2xl p-6 shadow-xl space-y-4">
+          <h3 class="font-bold text-white flex items-center gap-2 border-b border-slate-800 pb-4">
+            <i data-lucide="layers" class="w-5 h-5 text-indigo-400"></i>
+            Active Remediation Cohorts
+          </h3>
+          <div id="cohorts-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+        </div>
 
-          <button onclick="navigateToStep(1)" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold flex items-center space-x-1.5 transition-all">
+        <!-- TPO Module 3 Footer -->
+        <div class="flex items-center justify-between pt-4 pb-8 border-t border-slate-800/80">
+          <button onclick="navigateToPersonaStep('tpo', 2)" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-slate-300 flex items-center space-x-1.5 transition-all">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            <span>Previous: Radar</span>
+          </button>
+          <div class="flex items-center space-x-1.5">
+            <button onclick="navigateToPersonaStep('tpo', 1)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">1</button>
+            <button onclick="navigateToPersonaStep('tpo', 2)" class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs">2</button>
+            <button onclick="navigateToPersonaStep('tpo', 3)" class="w-7 h-7 rounded-lg bg-indigo-500 text-white font-bold text-xs">3</button>
+          </div>
+          <button onclick="navigateToPersonaStep('tpo', 1)" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold flex items-center space-x-1.5 transition-all">
             <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
-            <span>Return to Step 1</span>
+            <span>Return to Module 1</span>
           </button>
         </div>
       </section>

@@ -2,20 +2,33 @@
 let currentRole = "student";
 let activeSessionId = null;
 let currentUser = null;
-let currentStep = 1;
+let currentPersona = "student";
+let currentPersonaStep = 1;
 
 let gatewayRole = "student";   // "student" or "recruiter"
 let gatewayMode = "login";     // "login" or "signup"
 let sidebarOpen = false;
 
-const stepTitles = {
-  1: "Step 1: Placement Alerts",
-  2: "Step 2: Gap Diagnostic",
-  3: "Step 3: GitHub Authenticity",
-  4: "Step 4: AI Mock Interview",
-  5: "Step 5: Alumni Referral Bridge",
-  6: "Step 6: Recruiter Sourcing",
-  7: "Step 7: TPO Command Center"
+// Step metadata for dynamic breadcrumbs
+const personaStepLabels = {
+  student: {
+    1: "Student Step 1: Placement Alerts",
+    2: "Student Step 2: Gap Diagnostic",
+    3: "Student Step 3: GitHub Authenticity",
+    4: "Student Step 4: AI Mock Coach",
+    5: "Student Step 5: Alumni Referral Bridge"
+  },
+  recruiter: {
+    1: "Recruiter Module 1: Talent Sourcing",
+    2: "Recruiter Module 2: Code Proof Inspector",
+    3: "Recruiter Module 3: Interview Shortlist",
+    4: "Recruiter Module 4: Drive Forensics"
+  },
+  tpo: {
+    1: "TPO Module 1: Placement KPIs",
+    2: "TPO Module 2: Early-Warning Radar",
+    3: "TPO Module 3: Remediation Cohorts"
+  }
 };
 
 // Initialize when page loads
@@ -60,41 +73,10 @@ function enterDashboard(user) {
   document.getElementById("sidebar-toggle-btn").classList.remove("hidden");
   document.getElementById("step-breadcrumb").classList.remove("hidden");
 
-  // Update User Chip in Top Navbar
-  const avatar = document.getElementById("user-avatar");
-  const nameLabel = document.getElementById("user-name");
-  const roleBadge = document.getElementById("user-role-badge");
-
-  // Update User Card in Left Sidebar
-  const sideAvatar = document.getElementById("sidebar-user-avatar");
-  const sideName = document.getElementById("sidebar-user-name");
-  const sideRole = document.getElementById("sidebar-user-role");
-  const sideSwitchLabel = document.getElementById("sidebar-switch-label");
-
-  if (user) {
-    const isRecruiter = user.role === "recruiter";
-    const initial = user.name ? user.name.charAt(0).toUpperCase() : (isRecruiter ? "R" : "S");
-    
-    avatar.innerText = initial;
-    nameLabel.innerText = user.name || (isRecruiter ? "Campus Recruiter" : "Student");
-    roleBadge.innerText = isRecruiter ? (user.company || "Recruiter") : (user.department || "Student");
-    roleBadge.className = `text-[10px] font-medium capitalize ${isRecruiter ? 'text-cyan-400' : 'text-emerald-400'}`;
-    avatar.className = `w-6 h-6 rounded-lg font-bold text-xs flex items-center justify-center ${isRecruiter ? 'bg-cyan-500 text-slate-950' : 'bg-emerald-500 text-slate-950'}`;
-
-    if (sideAvatar) sideAvatar.innerText = initial;
-    if (sideName) sideName.innerText = user.name || (isRecruiter ? "Visiting Recruiter" : "Aarav Sharma");
-    if (sideRole) {
-      sideRole.innerText = isRecruiter ? `${user.company || "Tech Partner"} (Talent Acquisition)` : `${user.department || "Computer Science"} (8.4 CGPA)`;
-      sideRole.className = `text-[10px] font-medium truncate ${isRecruiter ? 'text-cyan-400' : 'text-emerald-400'}`;
-    }
-    if (sideSwitchLabel) {
-      sideSwitchLabel.innerText = isRecruiter ? "Switch to Student" : "Switch to Recruiter";
-    }
-
-    // Default to Step 6 for recruiter, Step 1 for student
-    navigateToStep(isRecruiter ? 6 : 1);
+  if (user && user.role === "recruiter") {
+    switchRole("recruiter");
   } else {
-    navigateToStep(1);
+    switchRole("student");
   }
 
   if (window.lucide) lucide.createIcons();
@@ -102,7 +84,7 @@ function enterDashboard(user) {
 
 function handleLogoClick() {
   if (currentUser) {
-    navigateToStep(currentUser.role === "recruiter" ? 6 : 1);
+    switchRole(currentUser.role === "recruiter" ? "recruiter" : "student");
   } else {
     showGatewayPage();
   }
@@ -112,114 +94,273 @@ function logout() {
   currentUser = null;
   localStorage.removeItem("careernexus_user");
   showGatewayPage();
-  // Reset form
   document.getElementById("gate-email").value = "";
   document.getElementById("gate-password").value = "";
   document.getElementById("gate-error-msg").classList.add("hidden");
 }
 
-// ==================== SIDEBAR & STEP-BY-STEP PAGE NAVIGATION ====================
+// ==================== PERSONA ROLE SWITCHER (DYNAMIC SIDEBAR) ====================
 
-function navigateToStep(step) {
-  currentStep = parseInt(step) || 1;
-  if (currentStep < 1) currentStep = 1;
-  if (currentStep > 7) currentStep = 7;
+function switchRole(role) {
+  currentRole = role;
+  currentPersona = role;
 
-  // 1. Toggle visibility of all 7 step pages
-  for (let s = 1; s <= 7; s++) {
-    const page = document.getElementById(`step-page-${s}`);
-    const sideItem = document.getElementById(`sidebar-item-${s}`);
-
-    if (page) {
-      if (s === currentStep) {
-        page.classList.remove("hidden");
-      } else {
-        page.classList.add("hidden");
-      }
-    }
-
-    if (sideItem) {
-      sideItem.classList.remove("active", "active-cyan", "active-indigo");
-      const stepNumBubble = sideItem.querySelector(".step-num");
-
-      if (s === currentStep) {
-        if (s === 6) {
-          sideItem.classList.add("active-cyan");
-          if (stepNumBubble) stepNumBubble.className = "step-num w-7 h-7 rounded-xl bg-cyan-500 text-slate-950 text-xs font-extrabold flex items-center justify-center flex-shrink-0 mt-0.5 shadow-sm";
-        } else if (s === 7) {
-          sideItem.classList.add("active-indigo");
-          if (stepNumBubble) stepNumBubble.className = "step-num w-7 h-7 rounded-xl bg-indigo-500 text-white text-xs font-extrabold flex items-center justify-center flex-shrink-0 mt-0.5 shadow-sm";
-        } else {
-          sideItem.classList.add("active");
-          if (stepNumBubble) stepNumBubble.className = "step-num w-7 h-7 rounded-xl bg-emerald-500 text-slate-950 text-xs font-extrabold flex items-center justify-center flex-shrink-0 mt-0.5 shadow-sm";
-        }
-      } else {
-        if (stepNumBubble) stepNumBubble.className = "step-num w-7 h-7 rounded-xl bg-slate-800 text-slate-400 text-xs font-extrabold flex items-center justify-center flex-shrink-0 mt-0.5";
-      }
-    }
-  }
-
-  // 2. Update Top Breadcrumb
-  const breadcrumb = document.getElementById("breadcrumb-step-label");
-  if (breadcrumb) {
-    breadcrumb.innerText = stepTitles[currentStep] || `Step ${currentStep}`;
-  }
-
-  // 3. Highlight Matching Persona Tab in Top Navbar
+  // 1. Update top persona buttons
   const tabStudent = document.getElementById("tab-student");
   const tabRecruiter = document.getElementById("tab-recruiter");
   const tabTpo = document.getElementById("tab-tpo");
 
-  if (tabStudent && tabRecruiter && tabTpo) {
-    [tabStudent, tabRecruiter, tabTpo].forEach(btn => {
-      btn.className = "role-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center space-x-1.5 text-slate-400 hover:text-white";
-    });
+  [tabStudent, tabRecruiter, tabTpo].forEach(btn => {
+    if (btn) btn.className = "role-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center space-x-1.5 text-slate-400 hover:text-white";
+  });
 
-    if (currentStep <= 5) {
-      tabStudent.className = "role-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center space-x-1.5 bg-emerald-500 text-slate-950 shadow-md";
-    } else if (currentStep === 6) {
-      tabRecruiter.className = "role-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center space-x-1.5 bg-cyan-500 text-slate-950 shadow-md";
-    } else if (currentStep === 7) {
-      tabTpo.className = "role-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center space-x-1.5 bg-indigo-500 text-white shadow-md";
+  if (role === "student" && tabStudent) {
+    tabStudent.className = "role-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center space-x-1.5 bg-emerald-500 text-slate-950 shadow-md";
+  } else if (role === "recruiter" && tabRecruiter) {
+    tabRecruiter.className = "role-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center space-x-1.5 bg-cyan-500 text-slate-950 shadow-md";
+  } else if (role === "tpo" && tabTpo) {
+    tabTpo.className = "role-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center space-x-1.5 bg-indigo-500 text-white shadow-md";
+  }
+
+  // 2. Switch Left Sidebar Navigation according to selected Persona
+  const navStudent = document.getElementById("sidebar-nav-student");
+  const navRecruiter = document.getElementById("sidebar-nav-recruiter");
+  const navTpo = document.getElementById("sidebar-nav-tpo");
+
+  const headerTitle = document.getElementById("sidebar-header-title");
+  const headerBadge = document.getElementById("sidebar-header-badge");
+  const headerIcon = document.getElementById("sidebar-header-icon");
+  const headerIconBox = document.getElementById("sidebar-header-icon-box");
+
+  if (role === "student") {
+    if (navStudent) navStudent.classList.remove("hidden");
+    if (navRecruiter) navRecruiter.classList.add("hidden");
+    if (navTpo) navTpo.classList.add("hidden");
+
+    if (headerTitle) headerTitle.innerText = "Student Portal";
+    if (headerBadge) {
+      headerBadge.innerText = "5 Steps";
+      headerBadge.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30";
     }
-  }
+    if (headerIcon) headerIcon.setAttribute("data-lucide", "graduation-cap");
+    if (headerIconBox) headerIconBox.className = "w-6 h-6 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400";
 
-  // 4. Trigger Automatic Data Fetching for Dedicated Views
-  if (currentStep === 6) {
+    updateSidebarProfile("student");
+    navigateToPersonaStep("student", 1);
+
+  } else if (role === "recruiter") {
+    if (navStudent) navStudent.classList.add("hidden");
+    if (navRecruiter) navRecruiter.classList.remove("hidden");
+    if (navTpo) navTpo.classList.add("hidden");
+
+    if (headerTitle) headerTitle.innerText = "Recruiter Desk";
+    if (headerBadge) {
+      headerBadge.innerText = "4 Modules";
+      headerBadge.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30";
+    }
+    if (headerIcon) headerIcon.setAttribute("data-lucide", "briefcase");
+    if (headerIconBox) headerIconBox.className = "w-6 h-6 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400";
+
+    updateSidebarProfile("recruiter");
+    navigateToPersonaStep("recruiter", 1);
     runReversePitchSearch();
-  } else if (currentStep === 7) {
+
+  } else if (role === "tpo") {
+    if (navStudent) navStudent.classList.add("hidden");
+    if (navRecruiter) navRecruiter.classList.add("hidden");
+    if (navTpo) navTpo.classList.remove("hidden");
+
+    if (headerTitle) headerTitle.innerText = "TPO Command Center";
+    if (headerBadge) {
+      headerBadge.innerText = "3 Modules";
+      headerBadge.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/30";
+    }
+    if (headerIcon) headerIcon.setAttribute("data-lucide", "shield-check");
+    if (headerIconBox) headerIconBox.className = "w-6 h-6 rounded-lg bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400";
+
+    updateSidebarProfile("tpo");
+    navigateToPersonaStep("tpo", 1);
     loadTPOAnalytics();
-  }
-
-  // 5. Close Mobile Sidebar Drawer if open
-  toggleSidebar(false);
-
-  // 6. Smoothly scroll main content area back to top
-  const contentArea = document.getElementById("step-content-area");
-  if (contentArea) {
-    contentArea.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   if (window.lucide) lucide.createIcons();
 }
 
-function switchRole(role) {
-  currentRole = role;
+function updateSidebarProfile(role) {
+  const avatar = document.getElementById("user-avatar");
+  const nameLabel = document.getElementById("user-name");
+  const roleBadge = document.getElementById("user-role-badge");
+
+  const sideAvatar = document.getElementById("sidebar-user-avatar");
+  const sideName = document.getElementById("sidebar-user-name");
+  const sideRole = document.getElementById("sidebar-user-role");
+  const sideSwitch = document.getElementById("sidebar-switch-label");
+
   if (role === "student") {
-    navigateToStep(1);
+    const sName = currentUser && currentUser.role === "student" ? currentUser.name : "Aarav Sharma";
+    const sDept = currentUser && currentUser.role === "student" ? (currentUser.department || "Computer Science") : "Computer Science (8.4 CGPA)";
+    
+    if (avatar) {
+      avatar.innerText = "A";
+      avatar.className = "w-6 h-6 rounded-lg font-bold text-xs flex items-center justify-center bg-emerald-500 text-slate-950";
+    }
+    if (nameLabel) nameLabel.innerText = sName;
+    if (roleBadge) {
+      roleBadge.innerText = "Student";
+      roleBadge.className = "text-[10px] text-emerald-400 font-medium capitalize";
+    }
+
+    if (sideAvatar) {
+      sideAvatar.innerText = "A";
+      sideAvatar.className = "w-8 h-8 rounded-lg bg-emerald-500 text-slate-950 font-extrabold text-sm flex items-center justify-center flex-shrink-0";
+    }
+    if (sideName) sideName.innerText = sName;
+    if (sideRole) {
+      sideRole.innerText = sDept;
+      sideRole.className = "text-[10px] text-emerald-400 font-medium truncate";
+    }
+    if (sideSwitch) sideSwitch.innerText = "Switch to Recruiter Desk";
+
   } else if (role === "recruiter") {
-    navigateToStep(6);
+    const rCompany = currentUser && currentUser.role === "recruiter" ? (currentUser.company || "Amazon") : "Amazon";
+    const rName = currentUser && currentUser.role === "recruiter" ? currentUser.name : "Amazon Hiring Team";
+
+    if (avatar) {
+      avatar.innerText = "R";
+      avatar.className = "w-6 h-6 rounded-lg font-bold text-xs flex items-center justify-center bg-cyan-500 text-slate-950";
+    }
+    if (nameLabel) nameLabel.innerText = rName;
+    if (roleBadge) {
+      roleBadge.innerText = `${rCompany} Recruiter`;
+      roleBadge.className = "text-[10px] text-cyan-400 font-medium capitalize";
+    }
+
+    if (sideAvatar) {
+      sideAvatar.innerText = "R";
+      sideAvatar.className = "w-8 h-8 rounded-lg bg-cyan-500 text-slate-950 font-extrabold text-sm flex items-center justify-center flex-shrink-0";
+    }
+    if (sideName) sideName.innerText = rName;
+    if (sideRole) {
+      sideRole.innerText = `${rCompany} (Talent Partner)`;
+      sideRole.className = "text-[10px] text-cyan-400 font-medium truncate";
+    }
+    if (sideSwitch) sideSwitch.innerText = "Switch to Student Portal";
+
   } else if (role === "tpo") {
-    navigateToStep(7);
+    if (avatar) {
+      avatar.innerText = "T";
+      avatar.className = "w-6 h-6 rounded-lg font-bold text-xs flex items-center justify-center bg-indigo-500 text-white";
+    }
+    if (nameLabel) nameLabel.innerText = "Placement Officer";
+    if (roleBadge) {
+      roleBadge.innerText = "TPO Cell Admin";
+      roleBadge.className = "text-[10px] text-indigo-400 font-medium capitalize";
+    }
+
+    if (sideAvatar) {
+      sideAvatar.innerText = "T";
+      sideAvatar.className = "w-8 h-8 rounded-lg bg-indigo-500 text-white font-extrabold text-sm flex items-center justify-center flex-shrink-0";
+    }
+    if (sideName) sideName.innerText = "Campus TPO Cell";
+    if (sideRole) {
+      sideRole.innerText = "Placement Administration";
+      sideRole.className = "text-[10px] text-indigo-400 font-medium truncate";
+    }
+    if (sideSwitch) sideSwitch.innerText = "Switch to Student Portal";
   }
 }
 
 function quickRoleSwitch() {
-  if (currentStep === 6) {
-    navigateToStep(1);
+  if (currentRole === "student") {
+    switchRole("recruiter");
   } else {
-    navigateToStep(6);
+    switchRole("student");
   }
+}
+
+// ==================== STEP-BY-STEP PAGE NAVIGATION ====================
+
+function navigateToPersonaStep(persona, step) {
+  currentPersona = persona;
+  currentPersonaStep = parseInt(step) || 1;
+
+  // Max steps per persona
+  const maxSteps = { student: 5, recruiter: 4, tpo: 3 };
+  const max = maxSteps[persona] || 5;
+  if (currentPersonaStep < 1) currentPersonaStep = 1;
+  if (currentPersonaStep > max) currentPersonaStep = max;
+
+  // 1. Hide ALL pages across ALL personas
+  const allPageIds = [
+    "page-student-1", "page-student-2", "page-student-3", "page-student-4", "page-student-5",
+    "page-recruiter-1", "page-recruiter-2", "page-recruiter-3", "page-recruiter-4",
+    "page-tpo-1", "page-tpo-2", "page-tpo-3"
+  ];
+
+  allPageIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.add("hidden");
+  });
+
+  // 2. Show the targeted page
+  const targetPage = document.getElementById(`page-${persona}-${currentPersonaStep}`);
+  if (targetPage) {
+    targetPage.classList.remove("hidden");
+  }
+
+  // 3. Update the active pill in that persona's sidebar navigation
+  for (let s = 1; s <= max; s++) {
+    const item = document.getElementById(`side-${persona}-item-${s}`);
+    if (item) {
+      item.classList.remove("active", "active-cyan", "active-indigo");
+      const bubble = item.querySelector(".step-num");
+
+      if (s === currentPersonaStep) {
+        if (persona === "recruiter") {
+          item.classList.add("active-cyan");
+          if (bubble) bubble.className = "step-num w-7 h-7 rounded-xl bg-cyan-500 text-slate-950 text-xs font-extrabold flex items-center justify-center flex-shrink-0 mt-0.5 shadow-sm";
+        } else if (persona === "tpo") {
+          item.classList.add("active-indigo");
+          if (bubble) bubble.className = "step-num w-7 h-7 rounded-xl bg-indigo-500 text-white text-xs font-extrabold flex items-center justify-center flex-shrink-0 mt-0.5 shadow-sm";
+        } else {
+          item.classList.add("active");
+          if (bubble) bubble.className = "step-num w-7 h-7 rounded-xl bg-emerald-500 text-slate-950 text-xs font-extrabold flex items-center justify-center flex-shrink-0 mt-0.5 shadow-sm";
+        }
+      } else {
+        if (bubble) bubble.className = "step-num w-7 h-7 rounded-xl bg-slate-800 text-slate-400 text-xs font-extrabold flex items-center justify-center flex-shrink-0 mt-0.5";
+      }
+    }
+  }
+
+  // 4. Update Top Breadcrumb
+  const breadcrumb = document.getElementById("breadcrumb-step-label");
+  const dot = document.getElementById("breadcrumb-dot");
+  if (breadcrumb) {
+    breadcrumb.innerText = personaStepLabels[persona]?.[currentPersonaStep] || `${persona} Step ${currentPersonaStep}`;
+  }
+  if (dot) {
+    dot.className = `w-2 h-2 rounded-full animate-pulse ${persona === 'recruiter' ? 'bg-cyan-400' : (persona === 'tpo' ? 'bg-indigo-400' : 'bg-emerald-400')}`;
+  }
+
+  // 5. Automatic Data Loading for Specific Modules
+  if (persona === "recruiter") {
+    if (currentPersonaStep === 1) runReversePitchSearch();
+    if (currentPersonaStep === 3) loadRecruiterPipeline();
+    if (currentPersonaStep === 4) loadRecruiterDriveForensics();
+  } else if (persona === "tpo") {
+    loadTPOAnalytics();
+  }
+
+  // 6. Smooth Scroll to Top
+  const contentArea = document.getElementById("step-content-area");
+  if (contentArea) {
+    contentArea.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  // 7. Close Mobile Drawer
+  toggleSidebar(false);
+
+  if (window.lucide) lucide.createIcons();
 }
 
 function toggleSidebar(forceState) {
@@ -353,7 +494,6 @@ async function handleGatewayAuth(e) {
       return;
     }
 
-    // Success -> Store & Transition to Dashboard
     currentUser = data.user;
     localStorage.setItem("careernexus_user", JSON.stringify(currentUser));
     enterDashboard(currentUser);
@@ -378,9 +518,8 @@ function fastGatewayLogin(role) {
   document.getElementById("gateway-auth-form").dispatchEvent(new Event("submit"));
 }
 
-// ==================== CORE PLATFORM DATA & FEATURE ENGINES ====================
+// ==================== CORE PLATFORM APIS & DATA ====================
 
-// Load Students & Drives into Select dropdowns
 async function loadInitialData() {
   try {
     const [studentsRes, drivesRes] = await Promise.all([
@@ -390,6 +529,7 @@ async function loadInitialData() {
     const students = await studentsRes.json();
     const drives = await drivesRes.json();
 
+    // Student Diagnostic Select
     const studentSelect = document.getElementById("diag-student-select");
     if (studentSelect) {
       studentSelect.innerHTML = students.map(s => `
@@ -397,9 +537,18 @@ async function loadInitialData() {
       `).join("");
     }
 
+    // Company Drive Diagnostic Select
     const companySelect = document.getElementById("diag-company-select");
     if (companySelect) {
       companySelect.innerHTML = drives.map(d => `
+        <option value="${d.id}">${d.company_name} - ${d.role_title} (${d.ctc_lpa} LPA)</option>
+      `).join("");
+    }
+
+    // Recruiter Drive Manager Select
+    const recruiterDriveSelect = document.getElementById("recruiter-drive-select");
+    if (recruiterDriveSelect) {
+      recruiterDriveSelect.innerHTML = drives.map(d => `
         <option value="${d.id}">${d.company_name} - ${d.role_title} (${d.ctc_lpa} LPA)</option>
       `).join("");
     }
@@ -570,34 +719,7 @@ async function runGitHubAudit() {
     const container = document.getElementById("github-results-container");
     if (container) {
       container.classList.remove("hidden");
-
-      container.innerHTML = `
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 p-5 rounded-2xl bg-slate-950 border border-slate-800">
-          <div class="space-y-1">
-            <span class="text-xs text-slate-400 uppercase font-bold tracking-wider">Proof-of-Work Score</span>
-            <div class="text-3xl font-extrabold ${audit.proof_of_work_score >= 75 ? 'text-emerald-400' : 'text-amber-400'}">${audit.proof_of_work_score}/100</div>
-            <span class="text-xs font-semibold ${audit.verified_project_badge ? 'text-emerald-400' : 'text-slate-400'}">
-              ${audit.verified_project_badge ? '🛡️ Verified Project Badge Awarded' : '⚠️ Unverified Project'}
-            </span>
-          </div>
-          <div class="md:col-span-3 space-y-3">
-            <div class="flex items-center justify-between">
-              <span class="text-sm font-bold text-white">${audit.verdict}</span>
-              <span class="text-xs px-2.5 py-0.5 rounded font-semibold ${audit.is_tutorial_clone ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30' : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'}">
-                ${audit.is_tutorial_clone ? 'Clone Template Detected' : 'Original Custom Architecture'}
-              </span>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-              ${audit.score_breakdown.map(b => `
-                <div class="p-2.5 bg-slate-900 border border-slate-800 rounded-xl">
-                  <div class="font-semibold text-slate-300">${b.factor}: <strong class="text-white">${b.score}/${b.max}</strong></div>
-                  <div class="text-[11px] text-slate-400">${b.status}</div>
-                </div>
-              `).join("")}
-            </div>
-          </div>
-        </div>
-      `;
+      container.innerHTML = renderGitHubAuditCard(audit);
     }
 
     if (window.lucide) lucide.createIcons();
@@ -607,7 +729,72 @@ async function runGitHubAudit() {
   }
 }
 
-// 4. Mock Interview Coach
+function renderGitHubAuditCard(audit) {
+  return `
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 p-5 rounded-2xl bg-slate-950 border border-slate-800">
+      <div class="space-y-1">
+        <span class="text-xs text-slate-400 uppercase font-bold tracking-wider">Proof-of-Work Score</span>
+        <div class="text-3xl font-extrabold ${audit.proof_of_work_score >= 75 ? 'text-emerald-400' : 'text-amber-400'}">${audit.proof_of_work_score}/100</div>
+        <span class="text-xs font-semibold ${audit.verified_project_badge ? 'text-emerald-400' : 'text-slate-400'}">
+          ${audit.verified_project_badge ? '🛡️ Verified Project Badge Awarded' : '⚠️ Unverified Project'}
+        </span>
+      </div>
+      <div class="md:col-span-3 space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="text-sm font-bold text-white">${audit.verdict}</span>
+          <span class="text-xs px-2.5 py-0.5 rounded font-semibold ${audit.is_tutorial_clone ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30' : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'}">
+            ${audit.is_tutorial_clone ? 'Clone Template Detected' : 'Original Custom Architecture'}
+          </span>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+          ${audit.score_breakdown.map(b => `
+            <div class="p-2.5 bg-slate-900 border border-slate-800 rounded-xl">
+              <div class="font-semibold text-slate-300">${b.factor}: <strong class="text-white">${b.score}/${b.max}</strong></div>
+              <div class="text-[11px] text-slate-400">${b.status}</div>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// 4. Recruiter Code Proof Inspector
+async function runRecruiterGitHubAudit() {
+  const user = document.getElementById("recruiter-github-user").value || "aarav-dev";
+  const repo = document.getElementById("recruiter-github-repo").value || "careernexus-core";
+
+  try {
+    const res = await fetch("/api/github/audit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        student_id: 1,
+        github_username: user,
+        sample_repo_url: repo
+      })
+    });
+
+    const data = await res.json();
+    const audit = data.audit;
+
+    const placeholder = document.getElementById("recruiter-github-placeholder");
+    if (placeholder) placeholder.classList.add("hidden");
+
+    const container = document.getElementById("recruiter-github-results");
+    if (container) {
+      container.classList.remove("hidden");
+      container.innerHTML = renderGitHubAuditCard(audit);
+    }
+
+    if (window.lucide) lucide.createIcons();
+
+  } catch (err) {
+    console.error("Recruiter code audit error:", err);
+  }
+}
+
+// 5. AI Mock Interview Coach
 async function generateMockQuestion() {
   const company = document.getElementById("mock-company-select").value;
   const category = document.getElementById("mock-cat-select").value;
@@ -687,7 +874,7 @@ async function submitMockAnswer() {
   }
 }
 
-// 5. Alumni Directory & Booking
+// 6. Alumni Directory & Booking
 async function loadAlumni() {
   try {
     const res = await fetch("/api/alumni");
@@ -735,7 +922,7 @@ async function requestAlumniSession(alumniId, name) {
   }
 }
 
-// 6. Recruiter Reverse Pitch Search
+// 7. Recruiter Reverse Pitch Search
 async function runReversePitchSearch() {
   const cgpaInput = document.getElementById("recruiter-cgpa");
   const deptInput = document.getElementById("recruiter-dept");
@@ -793,7 +980,7 @@ async function sendFastTrackInvite(studentId, name) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        drive_id: 1, // Amazon or default drive
+        drive_id: 1, // Amazon SDE-1
         student_ids: [studentId],
         custom_message: "You have been fast-tracked for technical rounds based on your verified code portfolio."
       })
@@ -805,7 +992,117 @@ async function sendFastTrackInvite(studentId, name) {
   }
 }
 
-// 7. TPO Placement Analytics
+// 8. Recruiter Pipeline Tracker
+async function loadRecruiterPipeline() {
+  const tbody = document.getElementById("recruiter-pipeline-tbody");
+  if (!tbody) return;
+
+  try {
+    const res = await fetch("/api/students");
+    const students = await res.json();
+
+    tbody.innerHTML = students.map((s, idx) => {
+      const stages = ["Invited (Fast-Track)", "Online Assessment", "Technical Round 1", "Offered"];
+      const currentStage = stages[idx % stages.length];
+      const stageColor = currentStage === "Offered" 
+        ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/30"
+        : (currentStage === "Technical Round 1" ? "bg-cyan-500/20 text-cyan-300 border-cyan-500/30" : "bg-amber-500/20 text-amber-300 border-amber-500/30");
+
+      return `
+        <tr class="hover:bg-slate-900/60 transition-colors">
+          <td class="px-4 py-3.5 font-bold text-white">${s.name}</td>
+          <td class="px-4 py-3.5 text-slate-300">${s.department}</td>
+          <td class="px-4 py-3.5 font-bold text-cyan-400">${s.cgpa}</td>
+          <td class="px-4 py-3.5 font-mono text-emerald-400 font-bold">${s.github_proof_score}/100</td>
+          <td class="px-4 py-3.5 text-slate-300">Amazon SDE-1</td>
+          <td class="px-4 py-3.5">
+            <span class="px-2.5 py-0.5 rounded text-xs font-semibold border ${stageColor}">
+              ${currentStage}
+            </span>
+          </td>
+          <td class="px-4 py-3.5">
+            <button onclick="advanceCandidateStage('${s.name}')" class="px-3 py-1 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-lg text-xs transition-all shadow-sm">
+              Advance ➔
+            </button>
+          </td>
+        </tr>
+      `;
+    }).join("");
+
+  } catch (err) {
+    console.error("Pipeline load error:", err);
+  }
+}
+
+function advanceCandidateStage(name) {
+  alert(`✅ Candidate ${name} advanced to next interview evaluation stage! Candidate notified via campus email.`);
+}
+
+// 9. Recruiter Campus Drive Forensics
+async function loadRecruiterDriveForensics() {
+  const select = document.getElementById("recruiter-drive-select");
+  const driveId = select ? select.value || 1 : 1;
+  const container = document.getElementById("recruiter-forensics-display");
+  if (!container) return;
+
+  try {
+    const res = await fetch(`/api/drives/${driveId}/forensics`);
+    const forensics = await res.json();
+
+    container.innerHTML = `
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-5 rounded-2xl bg-slate-950 border border-slate-800">
+        <div>
+          <span class="text-xs text-slate-400 uppercase font-bold tracking-wider">Drive Role & Package</span>
+          <div class="text-xl font-extrabold text-white mt-1">${forensics.company_name} - ${forensics.role_title}</div>
+          <div class="text-sm font-bold text-cyan-400 mt-0.5">${forensics.ctc_lpa} LPA (Super Dream Tier)</div>
+        </div>
+        <div>
+          <span class="text-xs text-slate-400 uppercase font-bold tracking-wider">Campus Selection Rate</span>
+          <div class="text-xl font-extrabold text-emerald-400 mt-1">${forensics.selection_rate}%</div>
+          <div class="text-xs text-slate-400 mt-0.5">Based on historical campus performance</div>
+        </div>
+        <div>
+          <span class="text-xs text-slate-400 uppercase font-bold tracking-wider">Priority Skill Filters</span>
+          <p class="text-xs text-slate-300 mt-1">${forensics.frequent_topics}</p>
+        </div>
+      </div>
+
+      <div class="space-y-3">
+        <h4 class="text-sm font-bold text-white flex items-center gap-2">
+          <i data-lucide="git-commit" class="w-4 h-4 text-cyan-400"></i>
+          Official Evaluation Rounds Structure
+        </h4>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          ${forensics.rounds.map(r => `
+            <div class="p-4 bg-slate-900 border border-slate-800 rounded-2xl space-y-1.5">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-extrabold px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300">ROUND ${r.round}</span>
+                <span class="text-xs text-slate-400 font-semibold">${r.duration}</span>
+              </div>
+              <div class="text-sm font-bold text-white">${r.name}</div>
+              <p class="text-xs text-slate-300 leading-relaxed">${r.focus}</p>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 text-xs text-slate-300 space-y-1">
+        <span class="font-bold text-amber-300 flex items-center gap-1.5">
+          <i data-lucide="shield-alert" class="w-3.5 h-3.5 text-amber-400"></i>
+          Recruiter Interviewer Guidelines:
+        </span>
+        <p class="italic text-slate-300">${forensics.interview_tips}</p>
+      </div>
+    `;
+
+    if (window.lucide) lucide.createIcons();
+
+  } catch (err) {
+    console.error("Forensics error:", err);
+  }
+}
+
+// 10. TPO Placement Analytics
 async function loadTPOAnalytics() {
   try {
     const res = await fetch("/api/analytics/tpo-dashboard");
@@ -872,6 +1169,8 @@ async function loadTPOAnalytics() {
         </div>
       `).join("");
     }
+
+    if (window.lucide) lucide.createIcons();
 
   } catch (err) {
     console.error("TPO load error:", err);
