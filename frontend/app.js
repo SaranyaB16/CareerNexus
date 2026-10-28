@@ -1,6 +1,10 @@
+// CareerNexus Client Engine
 let currentRole = "student";
 let activeSessionId = null;
 let currentUser = null;
+
+let gatewayRole = "student";   // "student" or "recruiter"
+let gatewayMode = "login";     // "login" or "signup"
 
 // Initialize when page loads
 document.addEventListener("DOMContentLoaded", async () => {
@@ -11,8 +15,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (savedUser) {
     try {
       currentUser = JSON.parse(savedUser);
-      updateAuthUI(currentUser);
-    } catch(e) {}
+      enterDashboard(currentUser);
+    } catch(e) {
+      showGatewayPage();
+    }
+  } else {
+    showGatewayPage();
   }
 
   await loadInitialData();
@@ -20,25 +28,227 @@ document.addEventListener("DOMContentLoaded", async () => {
   await loadAlumni();
 });
 
-// Role Switcher
-function switchRole(role) {
-  currentRole = role;
-  document.querySelectorAll(".role-btn").forEach(b => {
-    b.classList.remove("bg-indigo-600", "text-white", "shadow-md");
-    b.classList.add("text-slate-400");
-  });
+// ==================== PAGE 1 <-> PAGE 2 FLOW ====================
 
-  const activeBtn = document.getElementById(`tab-${role}`);
-  if (activeBtn) {
-    activeBtn.classList.remove("text-slate-400");
-    activeBtn.classList.add("bg-indigo-600", "text-white", "shadow-md");
+function showGatewayPage() {
+  document.getElementById("page-1-gateway").classList.remove("hidden");
+  document.getElementById("page-2-dashboard").classList.add("hidden");
+  document.getElementById("page-1-indicator").classList.remove("hidden");
+  document.getElementById("page-2-nav").classList.add("hidden");
+  if (window.lucide) lucide.createIcons();
+}
+
+function enterDashboard(user) {
+  document.getElementById("page-1-gateway").classList.add("hidden");
+  document.getElementById("page-2-dashboard").classList.remove("hidden");
+  document.getElementById("page-1-indicator").classList.add("hidden");
+  document.getElementById("page-2-nav").classList.remove("hidden");
+
+  // Update User Chip in Navbar
+  const avatar = document.getElementById("user-avatar");
+  const nameLabel = document.getElementById("user-name");
+  const roleBadge = document.getElementById("user-role-badge");
+
+  if (user) {
+    avatar.innerText = user.name.charAt(0).toUpperCase();
+    nameLabel.innerText = user.name;
+    const isRecruiter = user.role === "recruiter";
+    roleBadge.innerText = isRecruiter ? (user.company || "Recruiter") : (user.department || "Student");
+    roleBadge.className = `text-[10px] font-medium capitalize ${isRecruiter ? 'text-cyan-400' : 'text-emerald-400'}`;
+    avatar.className = `w-6 h-6 rounded-lg font-bold text-xs flex items-center justify-center ${isRecruiter ? 'bg-cyan-500 text-slate-950' : 'bg-emerald-500 text-slate-950'}`;
+
+    // Switch view automatically based on logged-in role
+    switchRole(isRecruiter ? "recruiter" : "student");
+  } else {
+    switchRole("student");
   }
 
-  document.getElementById("section-student").classList.add("hidden");
-  document.getElementById("section-recruiter").classList.add("hidden");
-  document.getElementById("section-tpo").classList.add("hidden");
+  if (window.lucide) lucide.createIcons();
+}
 
-  document.getElementById(`section-${role}`).classList.remove("hidden");
+function handleLogoClick() {
+  if (currentUser) {
+    // Return to default dashboard view for their role
+    switchRole(currentUser.role === "recruiter" ? "recruiter" : "student");
+  } else {
+    showGatewayPage();
+  }
+}
+
+function logout() {
+  currentUser = null;
+  localStorage.removeItem("careernexus_user");
+  showGatewayPage();
+  // Reset form
+  document.getElementById("gate-email").value = "";
+  document.getElementById("gate-password").value = "";
+  document.getElementById("gate-error-msg").classList.add("hidden");
+}
+
+// ==================== GATEWAY (PAGE 1) CONTROLS ====================
+
+function selectGatewayRole(role) {
+  gatewayRole = role;
+  const isStudent = role === "student";
+
+  const btnStudent = document.getElementById("role-btn-student");
+  const btnRecruiter = document.getElementById("role-btn-recruiter");
+  const checkStudent = document.getElementById("icon-check-student");
+  const checkRecruiter = document.getElementById("icon-check-recruiter");
+  const submitBtn = document.getElementById("gate-submit-btn");
+
+  if (isStudent) {
+    btnStudent.className = "p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-500/10 text-left transition-all relative group shadow-lg shadow-emerald-500/10";
+    checkStudent.className = "w-5 h-5 rounded-full bg-emerald-500 text-slate-950 flex items-center justify-center text-xs font-bold";
+    checkStudent.innerText = "✓";
+
+    btnRecruiter.className = "p-4 rounded-2xl border-2 border-slate-800 bg-slate-900/60 text-left transition-all relative group hover:border-slate-700";
+    checkRecruiter.className = "w-5 h-5 rounded-full bg-slate-800 text-transparent flex items-center justify-center text-xs font-bold";
+    checkRecruiter.innerText = "✓";
+
+    submitBtn.className = "w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3 rounded-xl text-sm transition-all flex items-center justify-center space-x-2 shadow-lg shadow-emerald-500/20";
+    submitBtn.querySelector("span").innerText = gatewayMode === "login" ? "Sign In to Student Portal" : "Create Student Account";
+  } else {
+    btnRecruiter.className = "p-4 rounded-2xl border-2 border-cyan-500 bg-cyan-500/10 text-left transition-all relative group shadow-lg shadow-cyan-500/10";
+    checkRecruiter.className = "w-5 h-5 rounded-full bg-cyan-500 text-slate-950 flex items-center justify-center text-xs font-bold";
+    checkRecruiter.innerText = "✓";
+
+    btnStudent.className = "p-4 rounded-2xl border-2 border-slate-800 bg-slate-900/60 text-left transition-all relative group hover:border-slate-700";
+    checkStudent.className = "w-5 h-5 rounded-full bg-slate-800 text-transparent flex items-center justify-center text-xs font-bold";
+    checkStudent.innerText = "✓";
+
+    submitBtn.className = "w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-3 rounded-xl text-sm transition-all flex items-center justify-center space-x-2 shadow-lg shadow-cyan-500/20";
+    submitBtn.querySelector("span").innerText = gatewayMode === "login" ? "Sign In to Recruiter Desk" : "Create Recruiter Account";
+  }
+
+  updateGatewayExtraFields();
+  if (window.lucide) lucide.createIcons();
+}
+
+function setGatewayAuthMode(mode) {
+  gatewayMode = mode;
+  const isLogin = mode === "login";
+
+  const tabLogin = document.getElementById("gate-tab-login");
+  const tabSignup = document.getElementById("gate-tab-signup");
+  const submitBtn = document.getElementById("gate-submit-btn");
+
+  const activeColor = gatewayRole === "student" ? "bg-emerald-500 text-slate-950 shadow-md" : "bg-cyan-500 text-slate-950 shadow-md";
+
+  if (isLogin) {
+    tabLogin.className = `flex-1 py-2 rounded-lg text-xs font-bold ${activeColor} transition-all`;
+    tabSignup.className = "flex-1 py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition-all";
+    submitBtn.querySelector("span").innerText = gatewayRole === "student" ? "Sign In to Student Portal" : "Sign In to Recruiter Desk";
+  } else {
+    tabSignup.className = `flex-1 py-2 rounded-lg text-xs font-bold ${activeColor} transition-all`;
+    tabLogin.className = "flex-1 py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition-all";
+    submitBtn.querySelector("span").innerText = gatewayRole === "student" ? "Create Student Account" : "Create Recruiter Account";
+  }
+
+  document.getElementById("gate-field-name").classList.toggle("hidden", isLogin);
+  updateGatewayExtraFields();
+}
+
+function updateGatewayExtraFields() {
+  const isSignup = gatewayMode === "signup";
+  document.getElementById("gate-field-student-extras").classList.toggle("hidden", !isSignup || gatewayRole !== "student");
+  document.getElementById("gate-field-recruiter-extras").classList.toggle("hidden", !isSignup || gatewayRole !== "recruiter");
+}
+
+async function handleGatewayAuth(e) {
+  e.preventDefault();
+  const errorBox = document.getElementById("gate-error-msg");
+  const errorText = document.getElementById("gate-error-text");
+  errorBox.classList.add("hidden");
+
+  const email = document.getElementById("gate-email").value.trim();
+  const password = document.getElementById("gate-password").value;
+
+  const endpoint = gatewayMode === "login" ? "/api/auth/login" : "/api/auth/signup";
+
+  const payload = {
+    email: email,
+    password: password,
+    role: gatewayRole
+  };
+
+  if (gatewayMode === "signup") {
+    payload.name = document.getElementById("gate-name").value.trim() || (gatewayRole === "student" ? "Student User" : "Recruiter User");
+    if (gatewayRole === "student") {
+      payload.department = document.getElementById("gate-dept").value;
+      payload.cgpa = parseFloat(document.getElementById("gate-cgpa").value) || 8.0;
+    } else {
+      payload.company = document.getElementById("gate-company").value.trim() || "Visiting Tech Partner";
+    }
+  }
+
+  try {
+    const res = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      errorText.innerText = data.detail || "Authentication failed. Please verify credentials.";
+      errorBox.classList.remove("hidden");
+      return;
+    }
+
+    // Success -> Store & Transition to Page 2 Dashboard
+    currentUser = data.user;
+    localStorage.setItem("careernexus_user", JSON.stringify(currentUser));
+    enterDashboard(currentUser);
+
+  } catch (err) {
+    errorText.innerText = "Connection error. Please ensure CareerNexus server is running.";
+    errorBox.classList.remove("hidden");
+  }
+}
+
+function fastGatewayLogin(role) {
+  if (role === "student") {
+    document.getElementById("gate-email").value = "aarav.sharma@college.edu";
+    document.getElementById("gate-password").value = "password123";
+    selectGatewayRole("student");
+  } else {
+    document.getElementById("gate-email").value = "recruiter@amazon.com";
+    document.getElementById("gate-password").value = "password123";
+    selectGatewayRole("recruiter");
+  }
+  setGatewayAuthMode("login");
+  document.getElementById("gateway-auth-form").dispatchEvent(new Event("submit"));
+}
+
+// ==================== PAGE 2: DASHBOARD CONTROLS ====================
+
+// Role Switcher on Dashboard
+function switchRole(role) {
+  currentRole = role;
+  
+  const tabStudent = document.getElementById("tab-student");
+  const tabRecruiter = document.getElementById("tab-recruiter");
+  const tabTpo = document.getElementById("tab-tpo");
+
+  // Reset tabs
+  [tabStudent, tabRecruiter, tabTpo].forEach(btn => {
+    btn.className = "role-btn px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center space-x-1.5 text-slate-400 hover:text-white";
+  });
+
+  // Activate chosen tab
+  if (role === "student") {
+    tabStudent.className = "role-btn px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center space-x-1.5 bg-emerald-500 text-slate-950 shadow-md";
+  } else if (role === "recruiter") {
+    tabRecruiter.className = "role-btn px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center space-x-1.5 bg-cyan-500 text-slate-950 shadow-md";
+  } else if (role === "tpo") {
+    tabTpo.className = "role-btn px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center space-x-1.5 bg-indigo-500 text-white shadow-md";
+  }
+
+  // Toggle sections
+  document.getElementById("section-student").classList.toggle("hidden", role !== "student");
+  document.getElementById("section-recruiter").classList.toggle("hidden", role !== "recruiter");
+  document.getElementById("section-tpo").classList.toggle("hidden", role !== "tpo");
 
   if (role === "recruiter") {
     runReversePitchSearch();
@@ -82,13 +292,13 @@ async function loadAlerts(studentId) {
     const container = document.getElementById("alerts-container");
 
     container.innerHTML = alerts.map(a => `
-      <div class="bg-slate-900/90 border border-slate-800 p-4 rounded-xl flex items-start space-x-3 shadow-md hover:border-slate-700 transition-all">
-        <div class="mt-0.5 p-2 rounded-lg ${a.urgency === 'high' ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20' : 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20'}">
+      <div class="bg-slate-900/90 border border-slate-800 p-4 rounded-2xl flex items-start space-x-3.5 shadow-md hover:border-slate-700 transition-all">
+        <div class="mt-0.5 p-2 rounded-xl ${a.urgency === 'high' ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'}">
           <i data-lucide="${a.urgency === 'high' ? 'alert-circle' : 'sparkles'}" class="w-4 h-4"></i>
         </div>
         <div class="flex-1">
-          <h4 class="text-sm font-semibold text-white">${a.title}</h4>
-          <p class="text-xs text-slate-400 mt-1">${a.message}</p>
+          <h4 class="text-sm font-bold text-white">${a.title}</h4>
+          <p class="text-xs text-slate-300 mt-1 leading-relaxed">${a.message}</p>
         </div>
       </div>
     `).join("");
@@ -117,7 +327,7 @@ async function runDiagnosticCheck() {
     // Badge
     const badge = document.getElementById("eligibility-badge");
     badge.innerText = diag.eligibility_status;
-    badge.className = `px-3 py-1 rounded-full text-xs font-semibold ${
+    badge.className = `px-3.5 py-1 rounded-full text-xs font-bold ${
       diag.is_eligible 
         ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' 
         : (diag.eligibility_status === 'Borderline' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-rose-500/20 text-rose-300 border border-rose-500/30')
@@ -134,11 +344,11 @@ async function runDiagnosticCheck() {
       `;
     } else {
       gapsContainer.innerHTML = diag.gaps_found.map(g => `
-        <div class="p-3.5 rounded-xl bg-slate-800/80 border border-slate-700/80 flex items-start justify-between">
+        <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800 flex items-start justify-between">
           <div class="space-y-1">
             <div class="flex items-center space-x-2">
-              <span class="text-xs px-2 py-0.5 rounded font-semibold ${g.severity === 'Critical' ? 'bg-rose-500/20 text-rose-300' : 'bg-amber-500/20 text-amber-300'}">${g.category}</span>
-              <span class="text-xs text-slate-400">Required: <strong class="text-slate-200">${g.required}</strong> | Current: <span class="text-rose-400 font-medium">${g.current}</span></span>
+              <span class="text-xs px-2.5 py-0.5 rounded font-bold ${g.severity === 'Critical' ? 'bg-rose-500/20 text-rose-300' : 'bg-amber-500/20 text-amber-300'}">${g.category}</span>
+              <span class="text-xs text-slate-400">Required: <strong class="text-slate-200">${g.required}</strong> | Current: <span class="text-rose-400 font-semibold">${g.current}</span></span>
             </div>
             <p class="text-xs text-slate-300">${g.remediation}</p>
           </div>
@@ -152,16 +362,16 @@ async function runDiagnosticCheck() {
     if (diag.curated_free_resources && diag.curated_free_resources.length > 0) {
       resSection.classList.remove("hidden");
       resContainer.innerHTML = diag.curated_free_resources.map(r => `
-        <a href="${r.url}" target="_blank" class="p-3.5 bg-slate-800/80 hover:bg-slate-800 border border-slate-700 rounded-xl transition-all group block space-y-1">
+        <a href="${r.url}" target="_blank" class="p-4 bg-slate-900 hover:bg-slate-850 border border-slate-800 hover:border-cyan-500/40 rounded-2xl transition-all group block space-y-1.5 shadow-sm">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-semibold text-indigo-400 uppercase tracking-wider">${r.skill}</span>
+            <span class="text-xs font-bold text-cyan-400 uppercase tracking-wider">${r.skill}</span>
             <span class="text-[11px] text-slate-400">${r.type} • ~${r.est_hours}h</span>
           </div>
-          <div class="text-sm font-medium text-white group-hover:text-indigo-300 transition-colors flex items-center gap-1">
+          <div class="text-sm font-semibold text-white group-hover:text-cyan-300 transition-colors flex items-center gap-1.5">
             <span>${r.title}</span>
             <i data-lucide="external-link" class="w-3.5 h-3.5 opacity-60"></i>
           </div>
-          <p class="text-xs text-slate-400 line-clamp-2">${r.description}</p>
+          <p class="text-xs text-slate-400 line-clamp-2 leading-relaxed">${r.description}</p>
         </a>
       `).join("");
     } else {
@@ -174,16 +384,16 @@ async function runDiagnosticCheck() {
     if (diag.level_up_plan && diag.level_up_plan.roadmap) {
       planSection.classList.remove("hidden");
       planContainer.innerHTML = diag.level_up_plan.roadmap.map(w => `
-        <div class="p-4 rounded-xl bg-slate-800/70 border border-slate-700/70 space-y-2">
+        <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-2">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400">WEEK ${w.week}</span>
-            <span class="text-xs text-slate-400 font-medium">${w.theme}</span>
+            <span class="text-xs font-extrabold px-2.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400">WEEK ${w.week}</span>
+            <span class="text-xs text-slate-400 font-semibold">${w.theme}</span>
           </div>
           <p class="text-xs font-medium text-slate-200">${w.focus}</p>
           <ul class="text-xs text-slate-400 space-y-1 list-disc list-inside">
             ${w.tasks.map(t => `<li>${t}</li>`).join("")}
           </ul>
-          <div class="pt-2 border-t border-slate-700/50 text-[11px] text-emerald-300 font-medium">
+          <div class="pt-2 border-t border-slate-800 text-[11px] text-emerald-300 font-semibold">
             🎯 Milestone: ${w.milestone}
           </div>
         </div>
@@ -223,25 +433,25 @@ async function runGitHubAudit() {
     container.classList.remove("hidden");
 
     container.innerHTML = `
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 rounded-xl bg-slate-950/80 border border-slate-800">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 p-5 rounded-2xl bg-slate-950 border border-slate-800">
         <div class="space-y-1">
-          <span class="text-xs text-slate-400 uppercase font-semibold">Proof-of-Work Score</span>
-          <div class="text-3xl font-bold ${audit.proof_of_work_score >= 75 ? 'text-emerald-400' : 'text-amber-400'}">${audit.proof_of_work_score}/100</div>
-          <span class="text-xs ${audit.verified_project_badge ? 'text-emerald-400' : 'text-slate-400'}">
+          <span class="text-xs text-slate-400 uppercase font-bold tracking-wider">Proof-of-Work Score</span>
+          <div class="text-3xl font-extrabold ${audit.proof_of_work_score >= 75 ? 'text-emerald-400' : 'text-amber-400'}">${audit.proof_of_work_score}/100</div>
+          <span class="text-xs font-semibold ${audit.verified_project_badge ? 'text-emerald-400' : 'text-slate-400'}">
             ${audit.verified_project_badge ? '🛡️ Verified Project Badge Awarded' : '⚠️ Unverified Project'}
           </span>
         </div>
-        <div class="md:col-span-3 space-y-2">
+        <div class="md:col-span-3 space-y-3">
           <div class="flex items-center justify-between">
-            <span class="text-sm font-semibold text-white">${audit.verdict}</span>
-            <span class="text-xs px-2 py-0.5 rounded ${audit.is_tutorial_clone ? 'bg-rose-500/20 text-rose-300' : 'bg-emerald-500/20 text-emerald-300'} font-medium">
+            <span class="text-sm font-bold text-white">${audit.verdict}</span>
+            <span class="text-xs px-2.5 py-0.5 rounded font-semibold ${audit.is_tutorial_clone ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30' : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'}">
               ${audit.is_tutorial_clone ? 'Clone Template Detected' : 'Original Custom Architecture'}
             </span>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
             ${audit.score_breakdown.map(b => `
-              <div class="p-2 bg-slate-900 border border-slate-800 rounded-lg">
-                <div class="font-medium text-slate-300">${b.factor}: <strong class="text-white">${b.score}/${b.max}</strong></div>
+              <div class="p-2.5 bg-slate-900 border border-slate-800 rounded-xl">
+                <div class="font-semibold text-slate-300">${b.factor}: <strong class="text-white">${b.score}/${b.max}</strong></div>
                 <div class="text-[11px] text-slate-400">${b.status}</div>
               </div>
             `).join("")}
@@ -309,23 +519,23 @@ async function submitMockAnswer() {
 
     fbBox.innerHTML = `
       <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-        <span class="text-sm font-semibold text-white">AI Evaluation Score: <strong class="${data.score >= 70 ? 'text-emerald-400' : 'text-amber-400'}">${data.score}/100</strong></span>
+        <span class="text-sm font-bold text-white">AI Evaluation Score: <strong class="${data.score >= 70 ? 'text-emerald-400' : 'text-amber-400'}">${data.score}/100</strong></span>
         <span class="text-xs text-slate-400">STAR Evaluator</span>
       </div>
       <div class="space-y-1 text-xs">
-        <div class="text-emerald-400 font-medium">✓ Strengths:</div>
+        <div class="text-emerald-400 font-bold">✓ Strengths:</div>
         <ul class="list-disc list-inside text-slate-300">
           ${data.strengths.map(s => `<li>${s}</li>`).join("")}
         </ul>
       </div>
       <div class="space-y-1 text-xs">
-        <div class="text-amber-400 font-medium">⚡ Key Critique & Areas to Improve:</div>
+        <div class="text-amber-400 font-bold">⚡ Key Critique & Areas to Improve:</div>
         <ul class="list-disc list-inside text-slate-300">
           ${data.critique.map(c => `<li>${c}</li>`).join("")}
         </ul>
       </div>
       <div class="pt-2 border-t border-slate-800 text-xs">
-        <span class="font-semibold text-indigo-300">💡 Model Answer Guide:</span>
+        <span class="font-bold text-cyan-300">💡 Model Answer Guide:</span>
         <p class="text-slate-300 mt-1 italic">${data.model_answer}</p>
       </div>
     `;
@@ -343,15 +553,15 @@ async function loadAlumni() {
     const container = document.getElementById("alumni-cards-container");
 
     container.innerHTML = alumni.map(a => `
-      <div class="p-3.5 bg-slate-800/80 border border-slate-700 rounded-xl flex items-center justify-between shadow-sm">
+      <div class="p-4 bg-slate-900 border border-slate-800 rounded-2xl flex items-center justify-between shadow-sm">
         <div class="space-y-0.5">
           <div class="flex items-center space-x-2">
-            <span class="text-sm font-semibold text-white">${a.name}</span>
-            <span class="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">${a.current_company}</span>
+            <span class="text-sm font-bold text-white">${a.name}</span>
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 font-semibold">${a.current_company}</span>
           </div>
           <p class="text-xs text-slate-400">${a.current_role} • Class of ${a.graduation_batch} (${a.department})</p>
         </div>
-        <button onclick="requestAlumniSession(${a.id}, '${a.name}')" class="px-3 py-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 rounded-lg text-xs font-medium transition-all">
+        <button onclick="requestAlumniSession(${a.id}, '${a.name}')" class="px-3.5 py-1.5 bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30 rounded-xl text-xs font-bold transition-all">
           Connect
         </button>
       </div>
@@ -403,19 +613,19 @@ async function runReversePitchSearch() {
 
     const grid = document.getElementById("candidates-grid");
     grid.innerHTML = data.candidates.map(c => `
-      <div class="bg-slate-800/80 border border-slate-700/80 p-4 rounded-xl space-y-3 shadow-md hover:border-slate-600 transition-all">
+      <div class="glass-card p-5 rounded-2xl space-y-3 shadow-md hover:border-cyan-500/30 transition-all">
         <div class="flex items-center justify-between">
-          <div class="font-semibold text-white text-sm">${c.name}</div>
-          <span class="text-xs px-2 py-0.5 rounded font-medium ${c.verified_project_badge ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-slate-700 text-slate-400'}">
+          <div class="font-bold text-white text-sm">${c.name}</div>
+          <span class="text-xs px-2.5 py-0.5 rounded font-semibold ${c.verified_project_badge ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-slate-800 text-slate-400'}">
             ${c.verified_project_badge ? '🛡️ Verified' : 'Unverified'}
           </span>
         </div>
-        <div class="text-xs text-slate-400 space-y-0.5">
-          <div>Dept: <strong class="text-slate-300">${c.department}</strong> | CGPA: <strong class="text-indigo-400">${c.cgpa}</strong></div>
+        <div class="text-xs text-slate-400 space-y-1">
+          <div>Dept: <strong class="text-slate-200">${c.department}</strong> | CGPA: <strong class="text-cyan-400">${c.cgpa}</strong></div>
           <div>Skills: <span class="text-slate-300">${c.skills}</span></div>
           ${c.github_username ? `<div>GitHub Proof: <strong class="text-emerald-400">${c.github_proof_score}/100</strong></div>` : ''}
         </div>
-        <button onclick="sendFastTrackInvite(${c.id}, '${c.name}')" class="w-full bg-cyan-600/90 hover:bg-cyan-600 text-white font-medium py-1.5 rounded-lg text-xs transition-all shadow-md shadow-cyan-600/20">
+        <button onclick="sendFastTrackInvite(${c.id}, '${c.name}')" class="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-2 rounded-xl text-xs transition-all shadow-md shadow-cyan-500/15">
           Fast-Track Interview Invite
         </button>
       </div>
@@ -453,36 +663,36 @@ async function loadTPOAnalytics() {
 
     const kpiGrid = document.getElementById("tpo-kpi-grid");
     kpiGrid.innerHTML = `
-      <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl space-y-1">
-        <span class="text-xs text-slate-400 uppercase font-semibold">Total Batch Size</span>
-        <div class="text-2xl font-bold text-white">${kpis.total_students} Students</div>
+      <div class="glass-card p-5 rounded-2xl space-y-1">
+        <span class="text-xs text-slate-400 uppercase font-bold tracking-wider">Total Batch Size</span>
+        <div class="text-2xl font-extrabold text-white">${kpis.total_students} Students</div>
       </div>
-      <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl space-y-1">
-        <span class="text-xs text-slate-400 uppercase font-semibold">Placement Rate</span>
-        <div class="text-2xl font-bold text-emerald-400">${kpis.placement_rate_pct}%</div>
+      <div class="glass-card p-5 rounded-2xl space-y-1">
+        <span class="text-xs text-slate-400 uppercase font-bold tracking-wider">Placement Rate</span>
+        <div class="text-2xl font-extrabold text-emerald-400">${kpis.placement_rate_pct}%</div>
       </div>
-      <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl space-y-1">
-        <span class="text-xs text-slate-400 uppercase font-semibold">Average CTC</span>
-        <div class="text-2xl font-bold text-indigo-400">${kpis.average_ctc_lpa} LPA</div>
+      <div class="glass-card p-5 rounded-2xl space-y-1">
+        <span class="text-xs text-slate-400 uppercase font-bold tracking-wider">Average Package</span>
+        <div class="text-2xl font-extrabold text-cyan-400">${kpis.average_ctc_lpa} LPA</div>
       </div>
-      <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl space-y-1">
-        <span class="text-xs text-slate-400 uppercase font-semibold">At-Risk Students</span>
-        <div class="text-2xl font-bold text-rose-400">${kpis.at_risk_students_count}</div>
+      <div class="glass-card p-5 rounded-2xl space-y-1">
+        <span class="text-xs text-slate-400 uppercase font-bold tracking-wider">At-Risk Students</span>
+        <div class="text-2xl font-extrabold text-rose-400">${kpis.at_risk_students_count}</div>
       </div>
     `;
 
     // At-Risk Table
     const tbody = document.getElementById("tpo-at-risk-tbody");
     tbody.innerHTML = data.at_risk_students.map(s => `
-      <tr class="hover:bg-slate-800/40 transition-colors">
-        <td class="px-4 py-3 font-medium text-white">${s.name}</td>
-        <td class="px-4 py-3 text-slate-400">${s.roll_no}</td>
-        <td class="px-4 py-3 text-slate-300">${s.department}</td>
-        <td class="px-4 py-3 font-semibold text-rose-400">${s.cgpa}</td>
-        <td class="px-4 py-3 text-rose-400 font-semibold">${s.backlogs}</td>
-        <td class="px-4 py-3"><span class="px-2 py-0.5 rounded text-xs font-semibold bg-rose-500/20 text-rose-300">At-Risk</span></td>
-        <td class="px-4 py-3">
-          <button onclick="alert('Student ${s.name} successfully enrolled into ${s.suggested_cohort}!')" class="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-500 text-white rounded text-xs font-medium transition-all">
+      <tr class="hover:bg-slate-900/60 transition-colors">
+        <td class="px-4 py-3.5 font-bold text-white">${s.name}</td>
+        <td class="px-4 py-3.5 text-slate-400">${s.roll_no}</td>
+        <td class="px-4 py-3.5 text-slate-300">${s.department}</td>
+        <td class="px-4 py-3.5 font-bold text-rose-400">${s.cgpa}</td>
+        <td class="px-4 py-3.5 text-rose-400 font-bold">${s.backlogs}</td>
+        <td class="px-4 py-3.5"><span class="px-2.5 py-0.5 rounded text-xs font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30">At-Risk</span></td>
+        <td class="px-4 py-3.5">
+          <button onclick="alert('Student ${s.name} successfully enrolled into ${s.suggested_cohort}!')" class="px-3 py-1 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-xl text-xs font-bold transition-all shadow-sm">
             Assign to ${s.suggested_cohort}
           </button>
         </td>
@@ -492,13 +702,13 @@ async function loadTPOAnalytics() {
     // Cohorts
     const cohortsGrid = document.getElementById("cohorts-grid");
     cohortsGrid.innerHTML = data.active_cohorts.map(c => `
-      <div class="p-4 bg-slate-800/80 border border-slate-700 rounded-xl space-y-2">
+      <div class="p-5 glass-card rounded-2xl space-y-2.5">
         <div class="flex items-center justify-between">
-          <span class="text-sm font-semibold text-white">${c.name}</span>
-          <span class="text-xs px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300">${c.category}</span>
+          <span class="text-sm font-bold text-white">${c.name}</span>
+          <span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-semibold border border-emerald-500/30">${c.category}</span>
         </div>
-        <p class="text-xs text-slate-400">Mentor: <strong class="text-slate-300">${c.mentor}</strong></p>
-        <p class="text-xs text-slate-300 bg-slate-900/60 p-2 rounded-lg border border-slate-800 font-mono">Task: ${c.weekly_task}</p>
+        <p class="text-xs text-slate-400">Mentor: <strong class="text-slate-200">${c.mentor}</strong></p>
+        <p class="text-xs text-slate-300 bg-slate-950/70 p-2.5 rounded-xl border border-slate-800 font-mono">Task: ${c.weekly_task}</p>
       </div>
     `).join("");
 
@@ -506,175 +716,3 @@ async function loadTPOAnalytics() {
     console.error("TPO load error:", err);
   }
 }
-
-// ==================== AUTHENTICATION LOGIC ====================
-let authMode = "login";    // "login" or "signup"
-let authRole = "student";  // "student" or "recruiter"
-
-function openAuthModal() {
-  document.getElementById("auth-modal").classList.remove("hidden");
-  document.getElementById("auth-error-msg").classList.add("hidden");
-  if (window.lucide) lucide.createIcons();
-}
-
-function closeAuthModal() {
-  document.getElementById("auth-modal").classList.add("hidden");
-}
-
-function setAuthMode(mode) {
-  authMode = mode;
-  const isLogin = mode === "login";
-
-  document.getElementById("auth-modal-title").innerText = isLogin ? "Sign In to CareerNexus" : "Create CareerNexus Account";
-  document.getElementById("auth-modal-subtitle").innerText = isLogin ? "Access personalized placement analytics & tools" : "Join the campus placement network";
-
-  // Tab button styling
-  const loginBtn = document.getElementById("auth-tab-login");
-  const signupBtn = document.getElementById("auth-tab-signup");
-  if (isLogin) {
-    loginBtn.className = "flex-1 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white transition-all shadow";
-    signupBtn.className = "flex-1 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all";
-  } else {
-    signupBtn.className = "flex-1 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white transition-all shadow";
-    loginBtn.className = "flex-1 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all";
-  }
-
-  // Toggle signup-only fields
-  document.getElementById("field-name").classList.toggle("hidden", isLogin);
-  document.getElementById("auth-submit-btn").querySelector("span").innerText = isLogin ? "Sign In" : "Create Account";
-
-  updateRoleExtraFields();
-}
-
-function setAuthRole(role) {
-  authRole = role;
-  const isStudent = role === "student";
-
-  const studentBtn = document.getElementById("role-select-student");
-  const recruiterBtn = document.getElementById("role-select-recruiter");
-
-  if (isStudent) {
-    studentBtn.className = "py-2 px-3 rounded-xl border border-indigo-500/40 bg-indigo-500/10 text-indigo-300 text-xs font-semibold flex items-center justify-center space-x-1.5 transition-all";
-    recruiterBtn.className = "py-2 px-3 rounded-xl border border-slate-700 bg-slate-800 text-slate-400 text-xs font-semibold flex items-center justify-center space-x-1.5 transition-all";
-  } else {
-    recruiterBtn.className = "py-2 px-3 rounded-xl border border-cyan-500/40 bg-cyan-500/10 text-cyan-300 text-xs font-semibold flex items-center justify-center space-x-1.5 transition-all";
-    studentBtn.className = "py-2 px-3 rounded-xl border border-slate-700 bg-slate-800 text-slate-400 text-xs font-semibold flex items-center justify-center space-x-1.5 transition-all";
-  }
-
-  updateRoleExtraFields();
-  if (window.lucide) lucide.createIcons();
-}
-
-function updateRoleExtraFields() {
-  const isSignup = authMode === "signup";
-  document.getElementById("field-student-extras").classList.toggle("hidden", !isSignup || authRole !== "student");
-  document.getElementById("field-recruiter-extras").classList.toggle("hidden", !isSignup || authRole !== "recruiter");
-}
-
-async function handleAuthSubmit(e) {
-  e.preventDefault();
-  const errorBox = document.getElementById("auth-error-msg");
-  errorBox.classList.add("hidden");
-
-  const email = document.getElementById("auth-email").value.trim();
-  const password = document.getElementById("auth-password").value;
-
-  const endpoint = authMode === "login" ? "/api/auth/login" : "/api/auth/signup";
-
-  const payload = {
-    email: email,
-    password: password,
-    role: authRole
-  };
-
-  if (authMode === "signup") {
-    payload.name = document.getElementById("auth-name").value.trim();
-    if (authRole === "student") {
-      payload.department = document.getElementById("auth-dept").value;
-      payload.cgpa = parseFloat(document.getElementById("auth-cgpa").value) || 7.5;
-    } else {
-      payload.company = document.getElementById("auth-company").value.trim() || "Visiting Tech Partner";
-    }
-  }
-
-  try {
-    const res = await fetch(endpoint, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-
-    const data = await res.json();
-    if (!res.ok) {
-      errorBox.innerText = data.detail || "Authentication failed. Please check your credentials.";
-      errorBox.classList.remove("hidden");
-      return;
-    }
-
-    // Success
-    currentUser = data.user;
-    localStorage.setItem("careernexus_user", JSON.stringify(currentUser));
-    updateAuthUI(currentUser);
-    closeAuthModal();
-
-    // Auto-switch to appropriate role view
-    switchRole(currentUser.role === "recruiter" ? "recruiter" : "student");
-    alert(`🎉 ${data.message}`);
-
-  } catch (err) {
-    errorBox.innerText = "Connection error. Is the CareerNexus server running?";
-    errorBox.classList.remove("hidden");
-  }
-}
-
-function updateAuthUI(user) {
-  const area = document.getElementById("auth-nav-area");
-  if (!user) {
-    area.innerHTML = `
-      <button onclick="openAuthModal()" class="px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium bg-slate-800 hover:bg-slate-700 text-indigo-300 border border-indigo-500/30 transition-all flex items-center space-x-1.5 shadow-sm">
-        <i data-lucide="log-in" class="w-4 h-4"></i>
-        <span>Sign In / Sign Up</span>
-      </button>
-    `;
-  } else {
-    const badgeColor = user.role === "recruiter" ? "bg-cyan-500/20 text-cyan-300 border-cyan-500/30" : "bg-indigo-500/20 text-indigo-300 border-indigo-500/30";
-    area.innerHTML = `
-      <div class="flex items-center space-x-2 bg-slate-800/80 py-1 px-2.5 rounded-xl border border-slate-700/80">
-        <div class="w-6 h-6 rounded-lg bg-indigo-600 flex items-center justify-center text-xs font-bold text-white">
-          ${user.name.charAt(0)}
-        </div>
-        <div class="text-left hidden sm:block">
-          <div class="text-xs font-semibold text-white leading-tight">${user.name}</div>
-          <div class="text-[10px] text-slate-400 capitalize">${user.role === 'recruiter' ? (user.company || 'Recruiter') : 'Student'}</div>
-        </div>
-        <button onclick="logout()" title="Logout" class="ml-1 text-slate-400 hover:text-rose-400 p-1 rounded transition-colors">
-          <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
-        </button>
-      </div>
-    `;
-  }
-  if (window.lucide) lucide.createIcons();
-}
-
-function quickDemoLogin(role) {
-  if (role === "student") {
-    document.getElementById("auth-email").value = "aarav.sharma@college.edu";
-    document.getElementById("auth-password").value = "password123";
-    setAuthRole("student");
-  } else {
-    document.getElementById("auth-email").value = "recruiter@amazon.com";
-    document.getElementById("auth-password").value = "password123";
-    setAuthRole("recruiter");
-  }
-  setAuthMode("login");
-  document.getElementById("auth-form").dispatchEvent(new Event("submit"));
-}
-
-function logout() {
-  currentUser = null;
-  localStorage.removeItem("careernexus_user");
-  updateAuthUI(null);
-  switchRole("student");
-  alert("You have logged out of CareerNexus.");
-}
-
