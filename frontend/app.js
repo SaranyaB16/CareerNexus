@@ -111,15 +111,15 @@ function switchRole(role) {
   const tabTpo = document.getElementById("tab-tpo");
 
   [tabStudent, tabRecruiter, tabTpo].forEach(btn => {
-    if (btn) btn.className = "role-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center space-x-1.5 text-slate-400 hover:text-white";
+    if (btn) btn.className = "role-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center space-x-1.5 text-slate-600 hover:text-slate-900 hover:bg-slate-100";
   });
 
   if (role === "student" && tabStudent) {
-    tabStudent.className = "role-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center space-x-1.5 bg-emerald-500 text-slate-950 shadow-md";
+    tabStudent.className = "role-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center space-x-1.5 bg-emerald-600 text-white shadow-xs";
   } else if (role === "recruiter" && tabRecruiter) {
-    tabRecruiter.className = "role-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center space-x-1.5 bg-cyan-500 text-slate-950 shadow-md";
+    tabRecruiter.className = "role-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center space-x-1.5 bg-sky-600 text-white shadow-xs";
   } else if (role === "tpo" && tabTpo) {
-    tabTpo.className = "role-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center space-x-1.5 bg-indigo-500 text-white shadow-md";
+    tabTpo.className = "role-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center space-x-1.5 bg-indigo-600 text-white shadow-xs";
   }
 
   // 2. Switch Left Sidebar Navigation according to selected Persona
@@ -140,10 +140,10 @@ function switchRole(role) {
     if (headerTitle) headerTitle.innerText = "Student Portal";
     if (headerBadge) {
       headerBadge.innerText = "5 Steps";
-      headerBadge.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30";
+      headerBadge.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200";
     }
     if (headerIcon) headerIcon.setAttribute("data-lucide", "graduation-cap");
-    if (headerIconBox) headerIconBox.className = "w-6 h-6 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400";
+    if (headerIconBox) headerIconBox.className = "w-6 h-6 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600";
 
     updateSidebarProfile("student");
     navigateToPersonaStep("student", 1);
@@ -156,10 +156,10 @@ function switchRole(role) {
     if (headerTitle) headerTitle.innerText = "Recruiter Desk";
     if (headerBadge) {
       headerBadge.innerText = "4 Modules";
-      headerBadge.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30";
+      headerBadge.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-sky-50 text-sky-700 border border-sky-200";
     }
     if (headerIcon) headerIcon.setAttribute("data-lucide", "briefcase");
-    if (headerIconBox) headerIconBox.className = "w-6 h-6 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400";
+    if (headerIconBox) headerIconBox.className = "w-6 h-6 rounded-lg bg-sky-50 border border-sky-200 flex items-center justify-center text-sky-600";
 
     updateSidebarProfile("recruiter");
     navigateToPersonaStep("recruiter", 1);
@@ -173,10 +173,10 @@ function switchRole(role) {
     if (headerTitle) headerTitle.innerText = "TPO Command Center";
     if (headerBadge) {
       headerBadge.innerText = "3 Modules";
-      headerBadge.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/30";
+      headerBadge.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200";
     }
     if (headerIcon) headerIcon.setAttribute("data-lucide", "shield-check");
-    if (headerIconBox) headerIconBox.className = "w-6 h-6 rounded-lg bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400";
+    if (headerIconBox) headerIconBox.className = "w-6 h-6 rounded-lg bg-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-600";
 
     updateSidebarProfile("tpo");
     navigateToPersonaStep("tpo", 1);
@@ -202,22 +202,22 @@ function updateSidebarProfile(role) {
     
     if (avatar) {
       avatar.innerText = "A";
-      avatar.className = "w-6 h-6 rounded-lg font-bold text-xs flex items-center justify-center bg-emerald-500 text-slate-950";
+      avatar.className = "w-6 h-6 rounded-lg font-bold text-xs flex items-center justify-center bg-emerald-600 text-white";
     }
     if (nameLabel) nameLabel.innerText = sName;
     if (roleBadge) {
       roleBadge.innerText = "Student";
-      roleBadge.className = "text-[10px] text-emerald-400 font-medium capitalize";
+      roleBadge.className = "text-[10px] text-emerald-700 font-medium capitalize";
     }
 
     if (sideAvatar) {
       sideAvatar.innerText = "A";
-      sideAvatar.className = "w-8 h-8 rounded-lg bg-emerald-500 text-slate-950 font-extrabold text-sm flex items-center justify-center flex-shrink-0";
+      sideAvatar.className = "w-8 h-8 rounded-lg bg-emerald-600 text-white font-extrabold text-sm flex items-center justify-center flex-shrink-0";
     }
     if (sideName) sideName.innerText = sName;
     if (sideRole) {
       sideRole.innerText = sDept;
-      sideRole.className = "text-[10px] text-emerald-400 font-medium truncate";
+      sideRole.className = "text-[10px] text-emerald-700 font-medium truncate";
     }
     if (sideSwitch) sideSwitch.innerText = "Switch to Recruiter Desk";
 
@@ -227,44 +227,44 @@ function updateSidebarProfile(role) {
 
     if (avatar) {
       avatar.innerText = "R";
-      avatar.className = "w-6 h-6 rounded-lg font-bold text-xs flex items-center justify-center bg-cyan-500 text-slate-950";
+      avatar.className = "w-6 h-6 rounded-lg font-bold text-xs flex items-center justify-center bg-sky-600 text-white";
     }
     if (nameLabel) nameLabel.innerText = rName;
     if (roleBadge) {
       roleBadge.innerText = `${rCompany} Recruiter`;
-      roleBadge.className = "text-[10px] text-cyan-400 font-medium capitalize";
+      roleBadge.className = "text-[10px] text-sky-700 font-medium capitalize";
     }
 
     if (sideAvatar) {
       sideAvatar.innerText = "R";
-      sideAvatar.className = "w-8 h-8 rounded-lg bg-cyan-500 text-slate-950 font-extrabold text-sm flex items-center justify-center flex-shrink-0";
+      sideAvatar.className = "w-8 h-8 rounded-lg bg-sky-600 text-white font-extrabold text-sm flex items-center justify-center flex-shrink-0";
     }
     if (sideName) sideName.innerText = rName;
     if (sideRole) {
       sideRole.innerText = `${rCompany} (Talent Partner)`;
-      sideRole.className = "text-[10px] text-cyan-400 font-medium truncate";
+      sideRole.className = "text-[10px] text-sky-700 font-medium truncate";
     }
     if (sideSwitch) sideSwitch.innerText = "Switch to Student Portal";
 
   } else if (role === "tpo") {
     if (avatar) {
       avatar.innerText = "T";
-      avatar.className = "w-6 h-6 rounded-lg font-bold text-xs flex items-center justify-center bg-indigo-500 text-white";
+      avatar.className = "w-6 h-6 rounded-lg font-bold text-xs flex items-center justify-center bg-indigo-600 text-white";
     }
     if (nameLabel) nameLabel.innerText = "Placement Officer";
     if (roleBadge) {
       roleBadge.innerText = "TPO Cell Admin";
-      roleBadge.className = "text-[10px] text-indigo-400 font-medium capitalize";
+      roleBadge.className = "text-[10px] text-indigo-700 font-medium capitalize";
     }
 
     if (sideAvatar) {
       sideAvatar.innerText = "T";
-      sideAvatar.className = "w-8 h-8 rounded-lg bg-indigo-500 text-white font-extrabold text-sm flex items-center justify-center flex-shrink-0";
+      sideAvatar.className = "w-8 h-8 rounded-lg bg-indigo-600 text-white font-extrabold text-sm flex items-center justify-center flex-shrink-0";
     }
     if (sideName) sideName.innerText = "Campus TPO Cell";
     if (sideRole) {
       sideRole.innerText = "Placement Administration";
-      sideRole.className = "text-[10px] text-indigo-400 font-medium truncate";
+      sideRole.className = "text-[10px] text-indigo-700 font-medium truncate";
     }
     if (sideSwitch) sideSwitch.innerText = "Switch to Student Portal";
   }
@@ -318,16 +318,16 @@ function navigateToPersonaStep(persona, step) {
       if (s === currentPersonaStep) {
         if (persona === "recruiter") {
           item.classList.add("active-cyan");
-          if (bubble) bubble.className = "step-num w-7 h-7 rounded-xl bg-cyan-500 text-slate-950 text-xs font-extrabold flex items-center justify-center flex-shrink-0 mt-0.5 shadow-sm";
+          if (bubble) bubble.className = "step-num w-7 h-7 rounded-xl bg-sky-600 text-white text-xs font-extrabold flex items-center justify-center flex-shrink-0 mt-0.5 shadow-xs";
         } else if (persona === "tpo") {
           item.classList.add("active-indigo");
-          if (bubble) bubble.className = "step-num w-7 h-7 rounded-xl bg-indigo-500 text-white text-xs font-extrabold flex items-center justify-center flex-shrink-0 mt-0.5 shadow-sm";
+          if (bubble) bubble.className = "step-num w-7 h-7 rounded-xl bg-indigo-600 text-white text-xs font-extrabold flex items-center justify-center flex-shrink-0 mt-0.5 shadow-xs";
         } else {
           item.classList.add("active");
-          if (bubble) bubble.className = "step-num w-7 h-7 rounded-xl bg-emerald-500 text-slate-950 text-xs font-extrabold flex items-center justify-center flex-shrink-0 mt-0.5 shadow-sm";
+          if (bubble) bubble.className = "step-num w-7 h-7 rounded-xl bg-emerald-600 text-white text-xs font-extrabold flex items-center justify-center flex-shrink-0 mt-0.5 shadow-xs";
         }
       } else {
-        if (bubble) bubble.className = "step-num w-7 h-7 rounded-xl bg-slate-800 text-slate-400 text-xs font-extrabold flex items-center justify-center flex-shrink-0 mt-0.5";
+        if (bubble) bubble.className = "step-num w-7 h-7 rounded-xl bg-slate-100 text-slate-500 border border-slate-200 text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5";
       }
     }
   }
@@ -396,26 +396,26 @@ function selectGatewayRole(role) {
   const submitBtn = document.getElementById("gate-submit-btn");
 
   if (isStudent) {
-    btnStudent.className = "p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-500/10 text-left transition-all relative group shadow-lg shadow-emerald-500/10";
-    checkStudent.className = "w-5 h-5 rounded-full bg-emerald-500 text-slate-950 flex items-center justify-center text-xs font-bold";
+    btnStudent.className = "p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-50 text-left transition-all relative group shadow-sm";
+    checkStudent.className = "w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold";
     checkStudent.innerText = "✓";
 
-    btnRecruiter.className = "p-4 rounded-2xl border-2 border-slate-800 bg-slate-900/60 text-left transition-all relative group hover:border-slate-700";
-    checkRecruiter.className = "w-5 h-5 rounded-full bg-slate-800 text-transparent flex items-center justify-center text-xs font-bold";
+    btnRecruiter.className = "p-4 rounded-2xl border-2 border-slate-200 bg-white text-left transition-all relative group hover:border-slate-300 shadow-xs";
+    checkRecruiter.className = "w-5 h-5 rounded-full bg-slate-100 text-transparent flex items-center justify-center text-xs font-bold border border-slate-200";
     checkRecruiter.innerText = "✓";
 
-    submitBtn.className = "w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3 rounded-xl text-sm transition-all flex items-center justify-center space-x-2 shadow-lg shadow-emerald-500/20";
+    submitBtn.className = "w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-sm transition-all flex items-center justify-center space-x-2 shadow-xs";
     submitBtn.querySelector("span").innerText = gatewayMode === "login" ? "Sign In to Student Portal" : "Create Student Account";
   } else {
-    btnRecruiter.className = "p-4 rounded-2xl border-2 border-cyan-500 bg-cyan-500/10 text-left transition-all relative group shadow-lg shadow-cyan-500/10";
-    checkRecruiter.className = "w-5 h-5 rounded-full bg-cyan-500 text-slate-950 flex items-center justify-center text-xs font-bold";
+    btnRecruiter.className = "p-4 rounded-2xl border-2 border-sky-500 bg-sky-50 text-left transition-all relative group shadow-sm";
+    checkRecruiter.className = "w-5 h-5 rounded-full bg-sky-600 text-white flex items-center justify-center text-xs font-bold";
     checkRecruiter.innerText = "✓";
 
-    btnStudent.className = "p-4 rounded-2xl border-2 border-slate-800 bg-slate-900/60 text-left transition-all relative group hover:border-slate-700";
-    checkStudent.className = "w-5 h-5 rounded-full bg-slate-800 text-transparent flex items-center justify-center text-xs font-bold";
+    btnStudent.className = "p-4 rounded-2xl border-2 border-slate-200 bg-white text-left transition-all relative group hover:border-slate-300 shadow-xs";
+    checkStudent.className = "w-5 h-5 rounded-full bg-slate-100 text-transparent flex items-center justify-center text-xs font-bold border border-slate-200";
     checkStudent.innerText = "✓";
 
-    submitBtn.className = "w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-3 rounded-xl text-sm transition-all flex items-center justify-center space-x-2 shadow-lg shadow-cyan-500/20";
+    submitBtn.className = "w-full bg-sky-600 hover:bg-sky-500 text-white font-bold py-3 rounded-xl text-sm transition-all flex items-center justify-center space-x-2 shadow-xs";
     submitBtn.querySelector("span").innerText = gatewayMode === "login" ? "Sign In to Recruiter Desk" : "Create Recruiter Account";
   }
 
@@ -431,15 +431,15 @@ function setGatewayAuthMode(mode) {
   const tabSignup = document.getElementById("gate-tab-signup");
   const submitBtn = document.getElementById("gate-submit-btn");
 
-  const activeColor = gatewayRole === "student" ? "bg-emerald-500 text-slate-950 shadow-md" : "bg-cyan-500 text-slate-950 shadow-md";
+  const activeColor = gatewayRole === "student" ? "bg-white text-emerald-700 shadow-xs font-bold border border-slate-200/80" : "bg-white text-sky-700 shadow-xs font-bold border border-slate-200/80";
 
   if (isLogin) {
     tabLogin.className = `flex-1 py-2 rounded-lg text-xs font-bold ${activeColor} transition-all`;
-    tabSignup.className = "flex-1 py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition-all";
+    tabSignup.className = "flex-1 py-2 rounded-lg text-xs font-bold text-slate-500 hover:text-slate-900 transition-all";
     submitBtn.querySelector("span").innerText = gatewayRole === "student" ? "Sign In to Student Portal" : "Sign In to Recruiter Desk";
   } else {
     tabSignup.className = `flex-1 py-2 rounded-lg text-xs font-bold ${activeColor} transition-all`;
-    tabLogin.className = "flex-1 py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition-all";
+    tabLogin.className = "flex-1 py-2 rounded-lg text-xs font-bold text-slate-500 hover:text-slate-900 transition-all";
     submitBtn.querySelector("span").innerText = gatewayRole === "student" ? "Create Student Account" : "Create Recruiter Account";
   }
 
@@ -567,13 +567,13 @@ async function loadAlerts(studentId) {
 
     if (container) {
       container.innerHTML = alerts.map(a => `
-        <div class="bg-slate-900/90 border border-slate-800 p-4 rounded-2xl flex items-start space-x-3.5 shadow-md hover:border-slate-700 transition-all">
-          <div class="mt-0.5 p-2 rounded-xl ${a.urgency === 'high' ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'}">
+        <div class="bg-white border border-slate-200 p-4 rounded-2xl flex items-start space-x-3.5 shadow-xs hover:border-slate-300 transition-all">
+          <div class="mt-0.5 p-2 rounded-xl ${a.urgency === 'high' ? 'bg-rose-50 text-rose-600 border border-rose-200' : 'bg-emerald-50 text-emerald-600 border border-emerald-200'}">
             <i data-lucide="${a.urgency === 'high' ? 'alert-circle' : 'sparkles'}" class="w-4 h-4"></i>
           </div>
           <div class="flex-1">
-            <h4 class="text-sm font-bold text-white">${a.title}</h4>
-            <p class="text-xs text-slate-300 mt-1 leading-relaxed">${a.message}</p>
+            <h4 class="text-sm font-bold text-slate-900">${a.title}</h4>
+            <p class="text-xs text-slate-600 mt-1 leading-relaxed">${a.message}</p>
           </div>
         </div>
       `).join("");
@@ -606,8 +606,8 @@ async function runDiagnosticCheck() {
       badge.innerText = diag.eligibility_status;
       badge.className = `px-3.5 py-1 rounded-full text-xs font-bold ${
         diag.is_eligible 
-          ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' 
-          : (diag.eligibility_status === 'Borderline' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-rose-500/20 text-rose-300 border border-rose-500/30')
+          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' 
+          : (diag.eligibility_status === 'Borderline' ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-rose-50 text-rose-700 border border-rose-200')
       }`;
     }
 
@@ -616,20 +616,20 @@ async function runDiagnosticCheck() {
     if (gapsContainer) {
       if (diag.gaps_found.length === 0) {
         gapsContainer.innerHTML = `
-          <div class="p-4 rounded-xl bg-emerald-950/20 border border-emerald-500/30 text-emerald-300 text-sm flex items-center space-x-2">
+          <div class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm flex items-center space-x-2">
             <i data-lucide="check-circle" class="w-5 h-5"></i>
             <span>All eligibility criteria met! You are fully qualified to register for this campus drive.</span>
           </div>
         `;
       } else {
         gapsContainer.innerHTML = diag.gaps_found.map(g => `
-          <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800 flex items-start justify-between">
+          <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex items-start justify-between">
             <div class="space-y-1">
               <div class="flex items-center space-x-2">
-                <span class="text-xs px-2.5 py-0.5 rounded font-bold ${g.severity === 'Critical' ? 'bg-rose-500/20 text-rose-300' : 'bg-amber-500/20 text-amber-300'}">${g.category}</span>
-                <span class="text-xs text-slate-400">Required: <strong class="text-slate-200">${g.required}</strong> | Current: <span class="text-rose-400 font-semibold">${g.current}</span></span>
+                <span class="text-xs px-2.5 py-0.5 rounded font-bold ${g.severity === 'Critical' ? 'bg-rose-100 text-rose-800' : 'bg-amber-100 text-amber-800'}">${g.category}</span>
+                <span class="text-xs text-slate-500">Required: <strong class="text-slate-800">${g.required}</strong> | Current: <span class="text-rose-600 font-semibold">${g.current}</span></span>
               </div>
-              <p class="text-xs text-slate-300">${g.remediation}</p>
+              <p class="text-xs text-slate-600">${g.remediation}</p>
             </div>
           </div>
         `).join("");
@@ -643,16 +643,16 @@ async function runDiagnosticCheck() {
       if (resSection) resSection.classList.remove("hidden");
       if (resContainer) {
         resContainer.innerHTML = diag.curated_free_resources.map(r => `
-          <a href="${r.url}" target="_blank" class="p-4 bg-slate-900 hover:bg-slate-850 border border-slate-800 hover:border-cyan-500/40 rounded-2xl transition-all group block space-y-1.5 shadow-sm">
+          <a href="${r.url}" target="_blank" class="p-4 bg-white hover:bg-slate-50 border border-slate-200 hover:border-sky-300 rounded-2xl transition-all group block space-y-1.5 shadow-xs">
             <div class="flex items-center justify-between">
-              <span class="text-xs font-bold text-cyan-400 uppercase tracking-wider">${r.skill}</span>
-              <span class="text-[11px] text-slate-400">${r.type} • ~${r.est_hours}h</span>
+              <span class="text-xs font-bold text-sky-600 uppercase tracking-wider">${r.skill}</span>
+              <span class="text-[11px] text-slate-500">${r.type} • ~${r.est_hours}h</span>
             </div>
-            <div class="text-sm font-semibold text-white group-hover:text-cyan-300 transition-colors flex items-center gap-1.5">
+            <div class="text-sm font-semibold text-slate-900 group-hover:text-sky-600 transition-colors flex items-center gap-1.5">
               <span>${r.title}</span>
               <i data-lucide="external-link" class="w-3.5 h-3.5 opacity-60"></i>
             </div>
-            <p class="text-xs text-slate-400 line-clamp-2 leading-relaxed">${r.description}</p>
+            <p class="text-xs text-slate-500 line-clamp-2 leading-relaxed">${r.description}</p>
           </a>
         `).join("");
       }
@@ -667,16 +667,16 @@ async function runDiagnosticCheck() {
       if (planSection) planSection.classList.remove("hidden");
       if (planContainer) {
         planContainer.innerHTML = diag.level_up_plan.roadmap.map(w => `
-          <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-2">
+          <div class="p-4 rounded-2xl bg-white border border-slate-200 space-y-2 shadow-xs">
             <div class="flex items-center justify-between">
-              <span class="text-xs font-extrabold px-2.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400">WEEK ${w.week}</span>
-              <span class="text-xs text-slate-400 font-semibold">${w.theme}</span>
+              <span class="text-xs font-extrabold px-2.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">WEEK ${w.week}</span>
+              <span class="text-xs text-slate-500 font-semibold">${w.theme}</span>
             </div>
-            <p class="text-xs font-medium text-slate-200">${w.focus}</p>
-            <ul class="text-xs text-slate-400 space-y-1 list-disc list-inside">
+            <p class="text-xs font-medium text-slate-800">${w.focus}</p>
+            <ul class="text-xs text-slate-600 space-y-1 list-disc list-inside">
               ${w.tasks.map(t => `<li>${t}</li>`).join("")}
             </ul>
-            <div class="pt-2 border-t border-slate-800 text-[11px] text-emerald-300 font-semibold">
+            <div class="pt-2 border-t border-slate-100 text-[11px] text-emerald-700 font-semibold">
               🎯 Milestone: ${w.milestone}
             </div>
           </div>
@@ -731,26 +731,26 @@ async function runGitHubAudit() {
 
 function renderGitHubAuditCard(audit) {
   return `
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 p-5 rounded-2xl bg-slate-950 border border-slate-800">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 p-5 rounded-2xl bg-slate-50 border border-slate-200">
       <div class="space-y-1">
-        <span class="text-xs text-slate-400 uppercase font-bold tracking-wider">Proof-of-Work Score</span>
-        <div class="text-3xl font-extrabold ${audit.proof_of_work_score >= 75 ? 'text-emerald-400' : 'text-amber-400'}">${audit.proof_of_work_score}/100</div>
-        <span class="text-xs font-semibold ${audit.verified_project_badge ? 'text-emerald-400' : 'text-slate-400'}">
+        <span class="text-xs text-slate-500 uppercase font-bold tracking-wider">Proof-of-Work Score</span>
+        <div class="text-3xl font-extrabold ${audit.proof_of_work_score >= 75 ? 'text-emerald-600' : 'text-amber-600'}">${audit.proof_of_work_score}/100</div>
+        <span class="text-xs font-semibold ${audit.verified_project_badge ? 'text-emerald-700' : 'text-slate-500'}">
           ${audit.verified_project_badge ? '🛡️ Verified Project Badge Awarded' : '⚠️ Unverified Project'}
         </span>
       </div>
       <div class="md:col-span-3 space-y-3">
         <div class="flex items-center justify-between">
-          <span class="text-sm font-bold text-white">${audit.verdict}</span>
-          <span class="text-xs px-2.5 py-0.5 rounded font-semibold ${audit.is_tutorial_clone ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30' : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'}">
+          <span class="text-sm font-bold text-slate-900">${audit.verdict}</span>
+          <span class="text-xs px-2.5 py-0.5 rounded font-semibold ${audit.is_tutorial_clone ? 'bg-rose-100 text-rose-800 border border-rose-200' : 'bg-emerald-100 text-emerald-800 border border-emerald-200'}">
             ${audit.is_tutorial_clone ? 'Clone Template Detected' : 'Original Custom Architecture'}
           </span>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
           ${audit.score_breakdown.map(b => `
-            <div class="p-2.5 bg-slate-900 border border-slate-800 rounded-xl">
-              <div class="font-semibold text-slate-300">${b.factor}: <strong class="text-white">${b.score}/${b.max}</strong></div>
-              <div class="text-[11px] text-slate-400">${b.status}</div>
+            <div class="p-2.5 bg-white border border-slate-200 rounded-xl shadow-xs">
+              <div class="font-semibold text-slate-700">${b.factor}: <strong class="text-slate-900">${b.score}/${b.max}</strong></div>
+              <div class="text-[11px] text-slate-500">${b.status}</div>
             </div>
           `).join("")}
         </div>
@@ -846,25 +846,25 @@ async function submitMockAnswer() {
       fbBox.classList.remove("hidden");
 
       fbBox.innerHTML = `
-        <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-          <span class="text-sm font-bold text-white">AI Evaluation Score: <strong class="${data.score >= 70 ? 'text-emerald-400' : 'text-amber-400'}">${data.score}/100</strong></span>
-          <span class="text-xs text-slate-400">STAR Evaluator</span>
+        <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+          <span class="text-sm font-bold text-slate-900">AI Evaluation Score: <strong class="${data.score >= 70 ? 'text-emerald-600' : 'text-amber-600'}">${data.score}/100</strong></span>
+          <span class="text-xs text-slate-500 font-medium">STAR Evaluator</span>
         </div>
         <div class="space-y-1 text-xs">
-          <div class="text-emerald-400 font-bold">✓ Strengths:</div>
-          <ul class="list-disc list-inside text-slate-300">
+          <div class="text-emerald-700 font-bold">✓ Strengths:</div>
+          <ul class="list-disc list-inside text-slate-600">
             ${data.strengths.map(s => `<li>${s}</li>`).join("")}
           </ul>
         </div>
         <div class="space-y-1 text-xs">
-          <div class="text-amber-400 font-bold">⚡ Key Critique & Areas to Improve:</div>
-          <ul class="list-disc list-inside text-slate-300">
+          <div class="text-amber-700 font-bold">⚡ Key Critique & Areas to Improve:</div>
+          <ul class="list-disc list-inside text-slate-600">
             ${data.critique.map(c => `<li>${c}</li>`).join("")}
           </ul>
         </div>
-        <div class="pt-2 border-t border-slate-800 text-xs">
-          <span class="font-bold text-cyan-300">💡 Model Answer Guide:</span>
-          <p class="text-slate-300 mt-1 italic">${data.model_answer}</p>
+        <div class="pt-2 border-t border-slate-200 text-xs">
+          <span class="font-bold text-sky-700">💡 Model Answer Guide:</span>
+          <p class="text-slate-700 mt-1 italic">${data.model_answer}</p>
         </div>
       `;
     }
@@ -883,15 +883,15 @@ async function loadAlumni() {
 
     if (container) {
       container.innerHTML = alumni.map(a => `
-        <div class="p-4 bg-slate-900 border border-slate-800 rounded-2xl flex items-center justify-between shadow-sm">
+        <div class="p-4 bg-white border border-slate-200 rounded-2xl flex items-center justify-between shadow-xs">
           <div class="space-y-0.5">
             <div class="flex items-center space-x-2">
-              <span class="text-sm font-bold text-white">${a.name}</span>
-              <span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 font-semibold">${a.current_company}</span>
+              <span class="text-sm font-bold text-slate-900">${a.name}</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 font-semibold">${a.current_company}</span>
             </div>
-            <p class="text-xs text-slate-400">${a.current_role} • Class of ${a.graduation_batch} (${a.department})</p>
+            <p class="text-xs text-slate-500">${a.current_role} • Class of ${a.graduation_batch} (${a.department})</p>
           </div>
-          <button onclick="requestAlumniSession(${a.id}, '${a.name}')" class="px-3.5 py-1.5 bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30 rounded-xl text-xs font-bold transition-all">
+          <button onclick="requestAlumniSession(${a.id}, '${a.name}')" class="px-3.5 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded-xl text-xs font-bold transition-all shadow-xs">
             Connect
           </button>
         </div>
@@ -950,19 +950,19 @@ async function runReversePitchSearch() {
     const grid = document.getElementById("candidates-grid");
     if (grid) {
       grid.innerHTML = data.candidates.map(c => `
-        <div class="glass-card p-5 rounded-2xl space-y-3 shadow-md hover:border-cyan-500/30 transition-all">
+        <div class="glass-card p-5 rounded-2xl space-y-3 shadow-xs hover:border-sky-300 transition-all border border-slate-200">
           <div class="flex items-center justify-between">
-            <div class="font-bold text-white text-sm">${c.name}</div>
-            <span class="text-xs px-2.5 py-0.5 rounded font-semibold ${c.verified_project_badge ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-slate-800 text-slate-400'}">
+            <div class="font-bold text-slate-900 text-sm">${c.name}</div>
+            <span class="text-xs px-2.5 py-0.5 rounded font-semibold ${c.verified_project_badge ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-100 text-slate-600 border border-slate-200'}">
               ${c.verified_project_badge ? '🛡️ Verified' : 'Unverified'}
             </span>
           </div>
-          <div class="text-xs text-slate-400 space-y-1">
-            <div>Dept: <strong class="text-slate-200">${c.department}</strong> | CGPA: <strong class="text-cyan-400">${c.cgpa}</strong></div>
-            <div>Skills: <span class="text-slate-300">${c.skills}</span></div>
-            ${c.github_username ? `<div>GitHub Proof: <strong class="text-emerald-400">${c.github_proof_score}/100</strong></div>` : ''}
+          <div class="text-xs text-slate-600 space-y-1">
+            <div>Dept: <strong class="text-slate-800">${c.department}</strong> | CGPA: <strong class="text-sky-600 font-bold">${c.cgpa}</strong></div>
+            <div>Skills: <span class="text-slate-700">${c.skills}</span></div>
+            ${c.github_username ? `<div>GitHub Proof: <strong class="text-emerald-600 font-bold">${c.github_proof_score}/100</strong></div>` : ''}
           </div>
-          <button onclick="sendFastTrackInvite(${c.id}, '${c.name}')" class="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-2 rounded-xl text-xs transition-all shadow-md shadow-cyan-500/15">
+          <button onclick="sendFastTrackInvite(${c.id}, '${c.name}')" class="w-full bg-sky-600 hover:bg-sky-500 text-white font-bold py-2 rounded-xl text-xs transition-all shadow-xs">
             Fast-Track Interview Invite
           </button>
         </div>
@@ -1005,23 +1005,23 @@ async function loadRecruiterPipeline() {
       const stages = ["Invited (Fast-Track)", "Online Assessment", "Technical Round 1", "Offered"];
       const currentStage = stages[idx % stages.length];
       const stageColor = currentStage === "Offered" 
-        ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/30"
-        : (currentStage === "Technical Round 1" ? "bg-cyan-500/20 text-cyan-300 border-cyan-500/30" : "bg-amber-500/20 text-amber-300 border-amber-500/30");
+        ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+        : (currentStage === "Technical Round 1" ? "bg-sky-50 text-sky-700 border-sky-200" : "bg-amber-50 text-amber-700 border-amber-200");
 
       return `
-        <tr class="hover:bg-slate-900/60 transition-colors">
-          <td class="px-4 py-3.5 font-bold text-white">${s.name}</td>
-          <td class="px-4 py-3.5 text-slate-300">${s.department}</td>
-          <td class="px-4 py-3.5 font-bold text-cyan-400">${s.cgpa}</td>
-          <td class="px-4 py-3.5 font-mono text-emerald-400 font-bold">${s.github_proof_score}/100</td>
-          <td class="px-4 py-3.5 text-slate-300">Amazon SDE-1</td>
+        <tr class="hover:bg-slate-50 transition-colors border-b border-slate-100">
+          <td class="px-4 py-3.5 font-bold text-slate-900">${s.name}</td>
+          <td class="px-4 py-3.5 text-slate-600">${s.department}</td>
+          <td class="px-4 py-3.5 font-bold text-sky-600">${s.cgpa}</td>
+          <td class="px-4 py-3.5 font-mono text-emerald-600 font-bold">${s.github_proof_score}/100</td>
+          <td class="px-4 py-3.5 text-slate-600">Amazon SDE-1</td>
           <td class="px-4 py-3.5">
             <span class="px-2.5 py-0.5 rounded text-xs font-semibold border ${stageColor}">
               ${currentStage}
             </span>
           </td>
           <td class="px-4 py-3.5">
-            <button onclick="advanceCandidateStage('${s.name}')" class="px-3 py-1 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-lg text-xs transition-all shadow-sm">
+            <button onclick="advanceCandidateStage('${s.name}')" class="px-3 py-1 bg-sky-600 hover:bg-sky-500 text-white font-bold rounded-lg text-xs transition-all shadow-xs">
               Advance ➔
             </button>
           </td>
@@ -1050,48 +1050,48 @@ async function loadRecruiterDriveForensics() {
     const forensics = await res.json();
 
     container.innerHTML = `
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-5 rounded-2xl bg-slate-950 border border-slate-800">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-5 rounded-2xl bg-slate-50 border border-slate-200 shadow-xs">
         <div>
-          <span class="text-xs text-slate-400 uppercase font-bold tracking-wider">Drive Role & Package</span>
-          <div class="text-xl font-extrabold text-white mt-1">${forensics.company_name} - ${forensics.role_title}</div>
-          <div class="text-sm font-bold text-cyan-400 mt-0.5">${forensics.ctc_lpa} LPA (Super Dream Tier)</div>
+          <span class="text-xs text-slate-500 uppercase font-bold tracking-wider">Drive Role & Package</span>
+          <div class="text-xl font-extrabold text-slate-900 mt-1">${forensics.company_name} - ${forensics.role_title}</div>
+          <div class="text-sm font-bold text-sky-600 mt-0.5">${forensics.ctc_lpa} LPA (Super Dream Tier)</div>
         </div>
         <div>
-          <span class="text-xs text-slate-400 uppercase font-bold tracking-wider">Campus Selection Rate</span>
-          <div class="text-xl font-extrabold text-emerald-400 mt-1">${forensics.selection_rate}%</div>
-          <div class="text-xs text-slate-400 mt-0.5">Based on historical campus performance</div>
+          <span class="text-xs text-slate-500 uppercase font-bold tracking-wider">Campus Selection Rate</span>
+          <div class="text-xl font-extrabold text-emerald-600 mt-1">${forensics.selection_rate}%</div>
+          <div class="text-xs text-slate-500 mt-0.5">Based on historical campus performance</div>
         </div>
         <div>
-          <span class="text-xs text-slate-400 uppercase font-bold tracking-wider">Priority Skill Filters</span>
-          <p class="text-xs text-slate-300 mt-1">${forensics.frequent_topics}</p>
+          <span class="text-xs text-slate-500 uppercase font-bold tracking-wider">Priority Skill Filters</span>
+          <p class="text-xs text-slate-700 mt-1">${forensics.frequent_topics}</p>
         </div>
       </div>
 
       <div class="space-y-3">
-        <h4 class="text-sm font-bold text-white flex items-center gap-2">
-          <i data-lucide="git-commit" class="w-4 h-4 text-cyan-400"></i>
+        <h4 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+          <i data-lucide="git-commit" class="w-4 h-4 text-sky-600"></i>
           Official Evaluation Rounds Structure
         </h4>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
           ${forensics.rounds.map(r => `
-            <div class="p-4 bg-slate-900 border border-slate-800 rounded-2xl space-y-1.5">
+            <div class="p-4 bg-white border border-slate-200 rounded-2xl space-y-1.5 shadow-xs">
               <div class="flex items-center justify-between">
-                <span class="text-xs font-extrabold px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300">ROUND ${r.round}</span>
-                <span class="text-xs text-slate-400 font-semibold">${r.duration}</span>
+                <span class="text-xs font-extrabold px-2 py-0.5 rounded bg-sky-50 text-sky-700 border border-sky-200">ROUND ${r.round}</span>
+                <span class="text-xs text-slate-500 font-semibold">${r.duration}</span>
               </div>
-              <div class="text-sm font-bold text-white">${r.name}</div>
-              <p class="text-xs text-slate-300 leading-relaxed">${r.focus}</p>
+              <div class="text-sm font-bold text-slate-900">${r.name}</div>
+              <p class="text-xs text-slate-600 leading-relaxed">${r.focus}</p>
             </div>
           `).join("")}
         </div>
       </div>
 
-      <div class="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 text-xs text-slate-300 space-y-1">
-        <span class="font-bold text-amber-300 flex items-center gap-1.5">
-          <i data-lucide="shield-alert" class="w-3.5 h-3.5 text-amber-400"></i>
+      <div class="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-xs text-amber-900 space-y-1 shadow-xs">
+        <span class="font-bold text-amber-800 flex items-center gap-1.5">
+          <i data-lucide="shield-alert" class="w-3.5 h-3.5 text-amber-600"></i>
           Recruiter Interviewer Guidelines:
         </span>
-        <p class="italic text-slate-300">${forensics.interview_tips}</p>
+        <p class="italic text-amber-900">${forensics.interview_tips}</p>
       </div>
     `;
 
@@ -1112,25 +1112,25 @@ async function loadTPOAnalytics() {
     const kpiGrid = document.getElementById("tpo-kpi-grid");
     if (kpiGrid) {
       kpiGrid.innerHTML = `
-        <div class="glass-card p-5 rounded-2xl space-y-1 border border-slate-800">
-          <span class="text-xs text-slate-400 uppercase font-bold tracking-wider">Total Batch Size</span>
-          <div class="text-2xl font-extrabold text-white">${kpis.total_students} Students</div>
-          <div class="text-[11px] text-slate-500">2026 Graduating Class</div>
+        <div class="glass-card p-5 rounded-2xl space-y-1 border border-slate-200 shadow-xs">
+          <span class="text-xs text-slate-500 uppercase font-bold tracking-wider">Total Batch Size</span>
+          <div class="text-2xl font-extrabold text-slate-900">${kpis.total_students} Students</div>
+          <div class="text-[11px] text-slate-400">2026 Graduating Class</div>
         </div>
-        <div class="glass-card p-5 rounded-2xl space-y-1 border border-slate-800">
-          <span class="text-xs text-slate-400 uppercase font-bold tracking-wider">Placement Rate</span>
-          <div class="text-2xl font-extrabold text-emerald-400">${kpis.placement_rate_pct}%</div>
-          <div class="text-[11px] text-emerald-400/80">Active Season Metric</div>
+        <div class="glass-card p-5 rounded-2xl space-y-1 border border-slate-200 shadow-xs">
+          <span class="text-xs text-slate-500 uppercase font-bold tracking-wider">Placement Rate</span>
+          <div class="text-2xl font-extrabold text-emerald-600">${kpis.placement_rate_pct}%</div>
+          <div class="text-[11px] text-emerald-700">Active Season Metric</div>
         </div>
-        <div class="glass-card p-5 rounded-2xl space-y-1 border border-slate-800">
-          <span class="text-xs text-slate-400 uppercase font-bold tracking-wider">Average Package</span>
-          <div class="text-2xl font-extrabold text-cyan-400">${kpis.average_ctc_lpa} LPA</div>
-          <div class="text-[11px] text-cyan-400/80">Campus Median CTC</div>
+        <div class="glass-card p-5 rounded-2xl space-y-1 border border-slate-200 shadow-xs">
+          <span class="text-xs text-slate-500 uppercase font-bold tracking-wider">Average Package</span>
+          <div class="text-2xl font-extrabold text-sky-600">${kpis.average_ctc_lpa} LPA</div>
+          <div class="text-[11px] text-sky-700">Campus Median CTC</div>
         </div>
-        <div class="glass-card p-5 rounded-2xl space-y-1 border border-rose-500/20 bg-rose-500/5">
-          <span class="text-xs text-rose-300 uppercase font-bold tracking-wider">At-Risk Students</span>
-          <div class="text-2xl font-extrabold text-rose-400">${kpis.at_risk_students_count}</div>
-          <div class="text-[11px] text-rose-400/80">Early Intervention Active</div>
+        <div class="glass-card p-5 rounded-2xl space-y-1 border border-rose-200 bg-rose-50 shadow-xs">
+          <span class="text-xs text-rose-700 uppercase font-bold tracking-wider">At-Risk Students</span>
+          <div class="text-2xl font-extrabold text-rose-700">${kpis.at_risk_students_count}</div>
+          <div class="text-[11px] text-rose-600">Early Intervention Active</div>
         </div>
       `;
     }
@@ -1139,15 +1139,15 @@ async function loadTPOAnalytics() {
     const tbody = document.getElementById("tpo-at-risk-tbody");
     if (tbody) {
       tbody.innerHTML = data.at_risk_students.map(s => `
-        <tr class="hover:bg-slate-900/60 transition-colors">
-          <td class="px-4 py-3.5 font-bold text-white">${s.name}</td>
-          <td class="px-4 py-3.5 text-slate-400 font-mono text-xs">${s.roll_no}</td>
-          <td class="px-4 py-3.5 text-slate-300">${s.department}</td>
-          <td class="px-4 py-3.5 font-bold text-rose-400">${s.cgpa}</td>
-          <td class="px-4 py-3.5 text-rose-400 font-bold">${s.backlogs}</td>
-          <td class="px-4 py-3.5"><span class="px-2.5 py-0.5 rounded text-xs font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30">At-Risk</span></td>
+        <tr class="hover:bg-slate-50 transition-colors border-b border-slate-100">
+          <td class="px-4 py-3.5 font-bold text-slate-900">${s.name}</td>
+          <td class="px-4 py-3.5 text-slate-500 font-mono text-xs">${s.roll_no}</td>
+          <td class="px-4 py-3.5 text-slate-600">${s.department}</td>
+          <td class="px-4 py-3.5 font-bold text-rose-600">${s.cgpa}</td>
+          <td class="px-4 py-3.5 text-rose-600 font-bold">${s.backlogs}</td>
+          <td class="px-4 py-3.5"><span class="px-2.5 py-0.5 rounded text-xs font-bold bg-rose-100 text-rose-800 border border-rose-200">At-Risk</span></td>
           <td class="px-4 py-3.5">
-            <button onclick="alert('Student ${s.name} successfully enrolled into ${s.suggested_cohort}!')" class="px-3 py-1 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-xl text-xs font-bold transition-all shadow-sm">
+            <button onclick="alert('Student ${s.name} successfully enrolled into ${s.suggested_cohort}!')" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition-all shadow-xs">
               Assign to ${s.suggested_cohort}
             </button>
           </td>
@@ -1159,13 +1159,13 @@ async function loadTPOAnalytics() {
     const cohortsGrid = document.getElementById("cohorts-grid");
     if (cohortsGrid) {
       cohortsGrid.innerHTML = data.active_cohorts.map(c => `
-        <div class="p-5 glass-card rounded-2xl space-y-2.5">
+        <div class="p-5 glass-card rounded-2xl space-y-2.5 border border-slate-200 shadow-xs">
           <div class="flex items-center justify-between">
-            <span class="text-sm font-bold text-white">${c.name}</span>
-            <span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-semibold border border-emerald-500/30">${c.category}</span>
+            <span class="text-sm font-bold text-slate-900">${c.name}</span>
+            <span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-semibold border border-emerald-200">${c.category}</span>
           </div>
-          <p class="text-xs text-slate-400">Mentor: <strong class="text-slate-200">${c.mentor}</strong></p>
-          <p class="text-xs text-slate-300 bg-slate-950/70 p-2.5 rounded-xl border border-slate-800 font-mono">Weekly Focus: ${c.weekly_task}</p>
+          <p class="text-xs text-slate-500">Mentor: <strong class="text-slate-800">${c.mentor}</strong></p>
+          <p class="text-xs text-slate-700 bg-slate-50 p-2.5 rounded-xl border border-slate-200 font-mono">Weekly Focus: ${c.weekly_task}</p>
         </div>
       `).join("");
     }

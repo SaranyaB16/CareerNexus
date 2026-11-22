@@ -1,92 +1,100 @@
-/* CareerNexus Premium Modern Styling */
+/* CareerNexus Clean White/Light Theme Styling */
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root {
-  --bg-main: #070b14;
-  --bg-sidebar: rgba(10, 16, 29, 0.95);
-  --bg-card: rgba(13, 21, 38, 0.85);
-  --border-card: rgba(30, 58, 95, 0.4);
-  --accent-student: #10b981; /* Emerald */
-  --accent-recruiter: #06b6d4; /* Electric Cyan */
-  --accent-ai: #6366f1; /* Indigo */
+  --bg-main: #f8fafc;
+  --bg-sidebar: #ffffff;
+  --bg-card: #ffffff;
+  --border-card: #e2e8f0;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --accent-student: #10b981;
+  --accent-recruiter: #0284c7;
+  --accent-ai: #4f46e5;
 }
 
 body {
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   background-color: var(--bg-main);
   background-image: 
-    radial-gradient(at 10% 10%, rgba(16, 185, 129, 0.08) 0px, transparent 45%),
-    radial-gradient(at 90% 15%, rgba(6, 182, 212, 0.09) 0px, transparent 45%),
-    radial-gradient(at 50% 85%, rgba(99, 102, 241, 0.07) 0px, transparent 50%);
+    radial-gradient(at 10% 10%, rgba(16, 185, 129, 0.05) 0px, transparent 50%),
+    radial-gradient(at 90% 15%, rgba(14, 165, 233, 0.05) 0px, transparent 50%),
+    radial-gradient(at 50% 85%, rgba(99, 102, 241, 0.04) 0px, transparent 55%);
   background-attachment: fixed;
-  color: #f1f5f9;
+  color: var(--text-main);
 }
 
-/* Glassmorphic card styling */
+/* Crisp Clean White Card Styling */
 .glass-card {
   background: var(--bg-card);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--border-card);
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.02);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .glass-card:hover {
-  border-color: rgba(56, 189, 248, 0.35);
+  border-color: #cbd5e1;
+  box-shadow: 0 10px 25px -3px rgba(15, 23, 42, 0.08), 0 4px 10px -2px rgba(15, 23, 42, 0.03);
 }
 
 /* Sidebar Styling */
 .sidebar-panel {
   background: var(--bg-sidebar);
-  border-right: 1px solid rgba(30, 58, 95, 0.5);
+  border-right: 1px solid var(--border-card);
+  box-shadow: 2px 0 16px -2px rgba(15, 23, 42, 0.03);
 }
 
 .sidebar-item {
+  color: #475569;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .sidebar-item:hover {
-  background: rgba(30, 58, 95, 0.3);
+  background: #f1f5f9;
+  color: #0f172a;
   transform: translateX(2px);
 }
 
+/* Student Active Pill */
 .sidebar-item.active {
-  background: rgba(16, 185, 129, 0.15);
-  color: #34d399;
-  border-color: rgba(16, 185, 129, 0.5);
-  box-shadow: 0 4px 15px -3px rgba(16, 185, 129, 0.25);
+  background: #ecfdf5;
+  color: #065f46;
+  border-color: #a7f3d0;
+  box-shadow: 0 2px 8px -1px rgba(16, 185, 129, 0.15);
 }
 
 .sidebar-item.active .step-num {
   background: #10b981;
-  color: #022c22;
-  border-color: #34d399;
+  color: #ffffff;
+  border-color: #059669;
 }
 
+/* Recruiter Active Pill */
 .sidebar-item.active-cyan {
-  background: rgba(6, 182, 212, 0.15);
-  color: #22d3ee;
-  border-color: rgba(6, 182, 212, 0.5);
-  box-shadow: 0 4px 15px -3px rgba(6, 182, 212, 0.25);
+  background: #f0f9ff;
+  color: #0369a1;
+  border-color: #bae6fd;
+  box-shadow: 0 2px 8px -1px rgba(2, 132, 199, 0.15);
 }
 
 .sidebar-item.active-cyan .step-num {
-  background: #06b6d4;
-  color: #083344;
-  border-color: #22d3ee;
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #0369a1;
 }
 
+/* TPO Active Pill */
 .sidebar-item.active-indigo {
-  background: rgba(99, 102, 241, 0.15);
-  color: #a5b4fc;
-  border-color: rgba(99, 102, 241, 0.5);
-  box-shadow: 0 4px 15px -3px rgba(99, 102, 241, 0.25);
+  background: #eef2ff;
+  color: #3730a3;
+  border-color: #c7d2fe;
+  box-shadow: 0 2px 8px -1px rgba(79, 70, 229, 0.15);
 }
 
 .sidebar-item.active-indigo .step-num {
-  background: #6366f1;
-  color: #1e1b4b;
-  border-color: #a5b4fc;
+  background: #4f46e5;
+  color: #ffffff;
+  border-color: #3730a3;
 }
 
 /* Step page transitions */
@@ -109,19 +117,19 @@ body {
   font-family: 'JetBrains Mono', monospace;
 }
 
-/* Smooth custom scrollbar */
+/* Smooth custom scrollbar for white theme */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #070b14;
+  background: #f8fafc;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
+  background: #cbd5e1;
   border-radius: 9999px;
-  border: 1px solid #070b14;
+  border: 1px solid #f8fafc;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: #94a3b8;
 }
